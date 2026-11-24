@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Điểm Danh · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=1" />
+  <style>
+    .btn-main { width: 100%; max-width: 220px; padding: 13px; font-size: 0.96rem; font-weight: 800; color: #fff; border: none; border-radius: 13px; background: linear-gradient(135deg, var(--primary-light), var(--primary)); cursor: pointer; }
+    .btn-main.wait { background: #64748b; } .btn-main.end { background: linear-gradient(135deg, #fbbf24, #d97706); } .btn-main.done { background: linear-gradient(135deg, var(--emerald-light), var(--emerald)); }
+    .pills { width: 100%; display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: 10px; }
+    .pill { background: #f5f3ff; border-radius: 10px; padding: 6px; text-align: center; }
+    .pill span { display: block; font-size: 0.65rem; color: #6b21a8; font-weight: 700; }
+    .pill strong { font-size: 0.82rem; font-weight: 800; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; margin-top: 10px; text-align: center; }
+    .c-day { aspect-ratio: 1; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; background: #f5f3ff; color: #4c1d95; cursor: pointer; }
+    .c-day.green { background: var(--emerald-light); color: #fff; } .c-day.yellow { background: var(--amber); color: #fff; } .c-day.red { background: var(--danger); color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Điểm Danh</span>
+  </header>
+  <main class="wrap">
+    <section class="white-card" style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <strong id="d-today" style="font-size:0.85rem;color:#581c87;text-transform:capitalize;"></strong>
+      <button id="btn-act" class="btn-main">Bắt Đầu Học</button>
+      <div id="pills" class="pills hidden">
+        <div class="pill"><span>Bắt đầu</span><strong id="p-s">--:--</strong></div>
+        <div class="pill"><span>Kết thúc</span><strong id="p-e">--:--</strong></div>
+        <div class="pill"><span>Tổng</span><strong id="p-t">--</strong></div>
+      </div>
+      <div id="d-st" style="font-size:0.76rem;font-weight:600;color:#581c87;">Chưa bắt đầu phiên hôm nay</div>
+    </section>
+
+    <section class="white-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <button id="c-prev" class="btn-sec" style="padding:4px 10px;">‹</button>
+        <strong id="c-title" style="font-size:0.9rem;"></strong>
+        <button id="c-next" class="btn-sec" style="padding:4px 10px;">›</button>
+      </div>
+      <div id="c-grid" class="cal-grid"></div>
+      <div id="c-det" style="margin-top:10px;background:#f3e8ff;border-radius:10px;padding:8px;font-size:0.75rem;font-weight:600;text-align:center;">Chạm vào ngày trên lịch để xem chi tiết</div>
+    </section>
+  </main>
+  <script src="../core/roadmap.js?v=1"></script>
+  <script src="../core/store.js?v=1"></script>
+  <script>
+    const MIN_MS = 10 * 60 * 1000;
+    let y = new Date().getFullYear(), m = new Date().getMonth();
+    const fmtT = (iso) => new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    const fmtD = (ms) => { const min = Math.max(1, Math.round(ms/60000)); return min >= 60 ? `${Math.floor(min/60)}h ${min%60}p` : `${min} phút`; };
+
+    const render = () => {
+      const now = new Date(), today = LabStore.toDateKey(now), s = LabStore.load(), rec = s.history[today];
+      document.getElementById('d-today').textContent = now.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+      const btn = document.getElementById('btn-act'), pills = document.getElementById('pills'), st = document.getElementById('d-st');
+      btn.className = 'btn-main';
+      if (!rec) {
+        btn.disabled = false; btn.textContent = 'Bắt Đầu Học'; pills.classList.add('hidden'); st.textContent = 'Chưa bắt đầu phiên hôm nay';
+      } else if (rec.start && !rec.end) {
+        pills.classList.remove('hidden'); document.getElementById('p-s').textContent = fmtT(rec.start); document.getElementById('p-e').textContent = '--:--'; document.getElementById('p-t').textContent = 'Đang học';
+        const rem = MIN_MS - (Date.now() - new Date(rec.start).getTime());
+        if (rem > 0) {
+          btn.disabled = true; btn.classList.add('wait');
+          btn.textContent = `Chờ ${String(Math.floor(rem/60000)).padStart(2,'0')}:${String(Math.floor((rem%60000)/1000)).padStart(2,'0')}`;
+          st.textContent = 'Chạm đúp dòng này để hủy phiên';
+        } else {
+          btn.disabled = false; btn.classList.add('end'); btn.textContent = 'Kết Thúc Học'; st.textContent = 'Đã đủ 10 phút — bấm để chốt!';
+        }
+      } else {
+        btn.disabled = true; btn.classList.add('done'); btn.textContent = 'Đã Hoàn Thành'; pills.classList.remove('hidden');
+        document.getElementById('p-s').textContent = rec.start ? fmtT(rec.start) : 'Bù';
+        document.getElementById('p-e').textContent = rec.end ? fmtT(rec.end) : '--:--';
+        document.getElementById('p-t').textContent = (rec.start && rec.end) ? fmtD(new Date(rec.end)-new Date(rec.start)) : 'Bù';
+        st.textContent = rec.note ? `✓ ${rec.note}` : '✓ Đã chốt hôm nay';
+      }
+    };
+
+    const renderCal = () => {
+      const { history } = LabStore.load(), today = LabStore.toDateKey(new Date()), first = Object.keys(history).sort()[0] || today;
+      document.getElementById('c-title').textContent = `Tháng ${m+1} / ${y}`;
+      const grid = document.getElementById('c-grid'); grid.innerHTML = '';
+      const off = (new Date(y, m, 1).getDay() + 6) % 7, days = new Date(y, m+1, 0).getDate();
+      for (let i=0; i<off; i++) grid.insertAdjacentHTML('beforeend', '<div></div>');
+      for (let d=1; d<=days; d++) {
+        const k = LabStore.toDateKey(new Date(y, m, d)), rec = history[k], el = document.createElement('div');
+        el.className = 'c-day'; el.textContent = d;
+        if (rec?.type === 'makeup') { el.classList.add('yellow'); el.onclick = () => { document.getElementById('c-det').textContent = `Ngày ${d}/${m+1}: Học bù`; }; }
+        else if (LabStore.isCompleted(rec)) {
+          el.classList.add('green');
+          el.onclick = () => { document.getElementById('c-det').textContent = `Ngày ${d}/${m+1}: ${fmtT(rec.start)}–${fmtT(rec.end)} (${fmtD(new Date(rec.end)-new Date(rec.start))})${rec.note ? ' · '+rec.note : ''}`; };
+        } else if (k < today && k >= first) {
+          el.classList.add('red');
+          el.onclick = () => { const s = LabStore.load(); s.history[k] = { type: 'makeup' }; LabStore.save(s); renderCal(); };
+        }
+        grid.appendChild(el);
+      }
+    };
+
+    document.getElementById('btn-act').onclick = () => {
+      const s = LabStore.load(), today = LabStore.toDateKey(new Date()), rec = s.history[today];
+      if (!rec) { s.history[today] = { start: new Date().toISOString(), end: null, type: 'normal', note: '' }; LabStore.save(s); render(); }
+      else if (rec.start && !rec.end && Date.now() - new Date(rec.start).getTime() >= MIN_MS) {
+        const note = prompt('Ghi chú buổi học (để trống lấy bài lộ trình):', LabStore.getNextLesson(s.history, today)) || '';
+        s.history[today].end = new Date().toISOString(); s.history[today].note = note.trim(); LabStore.save(s); render(); renderCal();
+      }
+    };
+    document.getElementById('d-st').ondblclick = () => { const s = LabStore.load(); delete s.history[LabStore.toDateKey(new Date())]; LabStore.save(s); render(); };
+    document.getElementById('c-prev').onclick = () => { if (--m < 0) { m = 11; y--; } renderCal(); };
+    document.getElementById('c-next').onclick = () => { if (++m > 11) { m = 0; y++; } renderCal(); };
+    render(); renderCal(); setInterval(render, 1000);
+  </script>
+</body>
+</html>

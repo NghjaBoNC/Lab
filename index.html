@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="core/theme.css?v=1" />
+  <style>
+    .hero-lab { display: flex; flex-direction: column; gap: 4px; }
+    .lab-sub { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; color: var(--gold); }
+    .lab-title { font-size: 1.35rem; font-weight: 900; }
+    .lab-status { font-size: 0.78rem; color: var(--text-sub); margin-top: 2px; }
+    .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .mod-card {
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: var(--r-card); padding: 14px; text-decoration: none; color: var(--text-light);
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 112px;
+      transition: transform 0.14s ease, background 0.14s ease;
+    }
+    .mod-card:active { transform: scale(0.97); background: rgba(255,255,255,0.2); }
+    .mod-card.featured { grid-column: span 2; background: var(--card-bg); color: var(--text-dark); min-height: 96px; }
+    .mod-top { display: flex; align-items: center; justify-content: space-between; }
+    .mod-ico { font-size: 1.25rem; }
+    .mod-tag { font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.16); color: var(--mint); }
+    .mod-card.featured .mod-tag { background: #f3e8ff; color: var(--primary); }
+    .mod-name { font-size: 0.96rem; font-weight: 800; margin-top: 8px; }
+    .mod-live { font-size: 0.74rem; font-weight: 600; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mod-card.featured .mod-live { color: #581c87; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <span id="greet" class="page-title">Chào Nghĩa</span>
+    <span class="badge-pill"><span class="user-dot"></span>NghjaBoNC</span>
+  </header>
+
+  <main class="wrap">
+    <section class="glass-card hero-lab">
+      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN</span>
+      <h1 class="lab-title">NghjaBoNC's Lab</h1>
+      <p id="lab-quote" class="lab-status"></p>
+    </section>
+
+    <section class="bento-grid">
+      <a href="diem-danh/" class="mod-card featured">
+        <div class="mod-top"><span class="mod-ico">🔥</span><span id="tag-dd" class="mod-tag">Sẵn sàng</span></div>
+        <div>
+          <div class="mod-name">Điểm Danh</div>
+          <div id="live-dd" class="mod-live">Chuỗi 0 ngày · Chạm để mở phiên</div>
+        </div>
+      </a>
+
+      <a href="muc-tieu/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">🎯</span><span class="mod-tag">30 Ngày</span></div>
+        <div>
+          <div class="mod-name">Mục Tiêu</div>
+          <div id="live-mt" class="mod-live">Đang tải...</div>
+        </div>
+      </a>
+
+      <a href="thong-ke/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">📊</span><span class="mod-tag">Dữ liệu</span></div>
+        <div>
+          <div class="mod-name">Thống Kê</div>
+          <div id="live-tk" class="mod-live">0 phút tích lũy</div>
+        </div>
+      </a>
+
+      <a href="ghi-chu/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">📝</span><span class="mod-tag">Nháp</span></div>
+        <div>
+          <div class="mod-name">Ghi Chú Nhanh</div>
+          <div id="live-gc" class="mod-live">0 ghi chú</div>
+        </div>
+      </a>
+
+      <a href="thanh-tuu/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">🏆</span><span id="tag-tt" class="mod-tag">Rank</span></div>
+        <div>
+          <div class="mod-name">Thành Tựu</div>
+          <div id="live-tt" class="mod-live">Tập Sự</div>
+        </div>
+      </a>
+
+      <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 76px;">
+        <div class="mod-top"><span class="mod-ico">⚙️ Cài Đặt & Sao Lưu</span><span class="mod-tag">JSON Sync</span></div>
+        <div class="mod-live">Xuất / Khôi phục dữ liệu toàn bộ Lab & quản lý Quote</div>
+      </a>
+    </section>
+  </main>
+
+  <script src="core/quotes.js"></script>
+  <script src="core/roadmap.js?v=1"></script>
+  <script src="core/store.js?v=1"></script>
+  <script>
+    const s = LabStore.load();
+    const today = LabStore.toDateKey(new Date());
+    const st = LabStore.calcStats(s.history);
+    const rk = LabStore.getRank(st.streak);
+    const rec = s.history[today];
+
+    const h = new Date().getHours();
+    document.getElementById('greet').textContent = (h < 5 ? 'Khuya rồi' : h < 12 ? 'Chào buổi sáng' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối') + ', Nghĩa';
+    const qList = [...(typeof QUOTES !== 'undefined' ? QUOTES : []), ...s.customQuotes];
+    document.getElementById('lab-quote').textContent = qList[Math.floor(Math.random() * qList.length)] || '';
+
+    document.getElementById('tag-dd').textContent = LabStore.isCompleted(rec) ? 'Đã xong ✓' : (rec && rec.start ? 'Đang học...' : 'Chưa chốt');
+    document.getElementById('live-dd').textContent = `Chuỗi ${st.streak} ngày · Kỷ lục ${st.bestStreak} ngày`;
+    document.getElementById('live-mt').textContent = (s.targets[today]?.text) || LabStore.getNextLesson(s.history, today);
+    const mins = st.totalMins;
+    document.getElementById('live-tk').textContent = `${mins >= 60 ? Math.floor(mins/60)+'h '+(mins%60)+'p' : mins+' phút'} · ${st.total} buổi`;
+    document.getElementById('live-gc').textContent = `${s.notes.length} ghi chú đã lưu`;
+    document.getElementById('tag-tt').textContent = `${st.streak}/${rk.next}`;
+    document.getElementById('live-tt').textContent = `Hạng: ${rk.name}`;
+  </script>
+</body>
+</html>

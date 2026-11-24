@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Cài Đặt · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=1" />
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Cài Đặt & Sao Lưu</span>
+  </header>
+  <main class="wrap">
+    <section class="white-card" style="display:flex;flex-direction:column;gap:10px;">
+      <strong>Thêm câu châm ngôn mới</strong>
+      <div style="display:flex;gap:6px;">
+        <input id="q-in" class="input-box" placeholder="Nhập câu động lực mới..." />
+        <button id="q-add" class="btn-pri">Thêm</button>
+      </div>
+      <strong style="margin-top:6px;">Sao lưu / Khôi phục toàn bộ Lab</strong>
+      <textarea id="bk-box" class="input-box" rows="4" placeholder="Bấm Xuất mã để lấy dữ liệu, hoặc dán mã cũ vào đây để Khôi phục..."></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button id="bk-exp" class="btn-sec">Xuất & Copy</button>
+        <button id="bk-imp" class="btn-pri">Khôi phục</button>
+      </div>
+    </section>
+  </main>
+  <script src="../core/roadmap.js?v=1"></script>
+  <script src="../core/store.js?v=1"></script>
+  <script>
+    document.getElementById('q-add').onclick = () => {
+      const v = document.getElementById('q-in').value.trim();
+      if (!v) return;
+      const s = LabStore.load(); s.customQuotes.push(v); LabStore.save(s);
+      document.getElementById('q-in').value = ''; alert('Đã thêm câu mới!');
+    };
+    document.getElementById('bk-exp').onclick = () => {
+      const code = JSON.stringify(LabStore.load());
+      document.getElementById('bk-box').value = code;
+      navigator.clipboard?.writeText(code);
+      document.getElementById('bk-exp').textContent = 'Đã Copy ✓';
+    };
+    document.getElementById('bk-imp').onclick = () => {
+      try {
+        const p = JSON.parse(document.getElementById('bk-box').value.trim());
+        if (!p || !p.history) throw 0;
+        LabStore.save(p); alert('Khôi phục thành công!');
+      } catch { alert('Mã JSON không hợp lệ!'); }
+    };
+  </script>
+</body>
+</html>

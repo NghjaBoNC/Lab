@@ -1,0 +1,40 @@
+:root {
+  --bg-top: #5b21b6; --bg-bottom: #3b0764;
+  --card-bg: rgba(255, 255, 255, 0.96);
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-border: rgba(255, 255, 255, 0.22);
+  --primary: #7c3aed; --primary-light: #8b5cf6;
+  --emerald: #059669; --emerald-light: #10b981;
+  --amber: #f59e0b; --danger: #ef4444;
+  --gold: #fde047; --mint: #6ee7b7;
+  --text-light: #ffffff; --text-sub: #e9d5ff; --text-dark: #2e1065;
+  --r-card: 20px; --r-elem: 13px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  min-height: 100dvh; font-family: system-ui, -apple-system, sans-serif;
+  background: linear-gradient(170deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  color: var(--text-light); padding: 54px 16px 24px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.hidden { display: none !important; }
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0; height: 48px;
+  max-width: 412px; margin: 0 auto; padding: 0 16px;
+  display: flex; align-items: center; justify-content: space-between; z-index: 100;
+}
+.back-btn, .badge-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px); border-radius: 999px;
+  font-size: 0.82rem; font-weight: 700; color: var(--text-light); text-decoration: none; cursor: pointer;
+}
+.user-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald-light); box-shadow: 0 0 7px var(--emerald-light); }
+.page-title { font-size: 0.9rem; font-weight: 800; color: var(--text-sub); }
+.wrap { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 12px; }
+.glass-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: var(--r-card); padding: 14px; }
+.white-card { background: var(--card-bg); color: var(--text-dark); border-radius: var(--r-card); padding: 16px; box-shadow: 0 16px 32px -10px rgba(15,3,38,.45); }
+.btn-pri, .btn-sec { border: none; border-radius: 11px; padding: 10px 14px; font-size: 0.84rem; font-weight: 700; cursor: pointer; }
+.btn-pri { background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: #fff; }
+.btn-sec { background: #f3e8ff; color: var(--primary); }
+.input-box { width: 100%; border: 1.5px solid #ddd6fe; border-radius: 11px; padding: 9px 11px; font-size: 0.84rem; font-family: inherit; outline: none; }
