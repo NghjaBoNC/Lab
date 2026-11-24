@@ -4,27 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="core/theme.css?v=1" />
+  <link rel="stylesheet" href="core/theme.css?v=2" />
   <style>
     .hero-lab { display: flex; flex-direction: column; gap: 4px; }
     .lab-sub { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; color: var(--gold); }
     .lab-title { font-size: 1.35rem; font-weight: 900; }
-    .lab-status { font-size: 0.78rem; color: var(--text-sub); margin-top: 2px; }
-    .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+    .lab-status { font-size: 0.78rem; color: var(--text-sub); margin-top: 2px; line-height: 1.35; }
+    .bento-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; width: 100%; }
     .mod-card {
+      min-width: 0; overflow: hidden;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-radius: var(--r-card); padding: 14px; text-decoration: none; color: var(--text-light);
-      display: flex; flex-direction: column; justify-content: space-between; min-height: 112px;
+      border-radius: var(--r-card); padding: 13px; text-decoration: none; color: var(--text-light);
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 106px;
       transition: transform 0.14s ease, background 0.14s ease;
     }
     .mod-card:active { transform: scale(0.97); background: rgba(255,255,255,0.2); }
-    .mod-card.featured { grid-column: span 2; background: var(--card-bg); color: var(--text-dark); min-height: 96px; }
-    .mod-top { display: flex; align-items: center; justify-content: space-between; }
-    .mod-ico { font-size: 1.25rem; }
-    .mod-tag { font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.16); color: var(--mint); }
+    .mod-card.featured { grid-column: span 2; background: var(--card-bg); color: var(--text-dark); min-height: 92px; }
+    .mod-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .mod-ico { font-size: 1.2rem; flex-shrink: 0; }
+    .mod-tag { font-size: 0.64rem; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: rgba(255,255,255,0.16); color: var(--mint); white-space: nowrap; }
     .mod-card.featured .mod-tag { background: #f3e8ff; color: var(--primary); }
-    .mod-name { font-size: 0.96rem; font-weight: 800; margin-top: 8px; }
-    .mod-live { font-size: 0.74rem; font-weight: 600; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mod-name { font-size: 0.94rem; font-weight: 800; margin-top: 8px; }
+    .mod-live { font-size: 0.73rem; font-weight: 600; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .mod-card.featured .mod-live { color: #581c87; }
   </style>
 </head>
@@ -82,16 +83,16 @@
         </div>
       </a>
 
-      <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 76px;">
-        <div class="mod-top"><span class="mod-ico">⚙️ Cài Đặt & Sao Lưu</span><span class="mod-tag">JSON Sync</span></div>
+      <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;">
+        <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">⚙️ Cài Đặt & Sao Lưu</span><span class="mod-tag">JSON Sync</span></div>
         <div class="mod-live">Xuất / Khôi phục dữ liệu toàn bộ Lab & quản lý Quote</div>
       </a>
     </section>
   </main>
 
   <script src="core/quotes.js"></script>
-  <script src="core/roadmap.js?v=1"></script>
-  <script src="core/store.js?v=1"></script>
+  <script src="core/roadmap.js?v=2"></script>
+  <script src="core/store.js?v=2"></script>
   <script>
     const s = LabStore.load();
     const today = LabStore.toDateKey(new Date());
