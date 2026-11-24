@@ -4,47 +4,106 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Thành Tựu · NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="../core/theme.css?v=1" />
+  <link rel="stylesheet" href="../core/theme.css?v=3" />
   <style>
-    .badge-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--glass-bg); border: 1px solid var(--glass-border); opacity: 0.48; }
+    .prog-bar { width: 100%; height: 8px; background: #ede9fe; border-radius: 999px; overflow: hidden; margin-top: 8px; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, var(--emerald-light), var(--primary)); transition: width 0.3s; }
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .tab-b { padding: 7px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .tab-b.active { background: #fff; color: var(--text-dark); }
+    .badge-item { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-radius: 15px; background: var(--glass-bg); border: 1px solid var(--glass-border); opacity: 0.5; }
     .badge-item.unlocked { opacity: 1; background: var(--card-bg); color: var(--text-dark); }
-    .b-ico { font-size: 1.5rem; }
-    .b-title { font-size: 0.88rem; font-weight: 800; }
-    .b-desc { font-size: 0.74rem; opacity: 0.8; }
+    .b-ico { font-size: 1.4rem; flex-shrink: 0; }
+    .b-cat { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; color: var(--mint); }
+    .badge-item.unlocked .b-cat { color: var(--primary); }
+    .b-title { font-size: 0.85rem; font-weight: 800; }
+    .b-desc { font-size: 0.72rem; opacity: 0.82; }
   </style>
 </head>
 <body>
   <header class="top-nav">
     <a href="../" class="back-btn">‹ Lab</a>
-    <span class="page-title">Thành Tựu & Danh Hiệu</span>
+    <span class="page-title">100 Thành Tựu</span>
   </header>
   <main class="wrap">
     <section class="white-card" style="text-align:center;">
-      <span style="font-size:0.72rem;font-weight:800;color:var(--primary);">DANH HIỆU HIỆN TẠI</span>
-      <h2 id="rk-title" style="font-size:1.3rem;margin:4px 0;">Tập Sự</h2>
-      <p id="rk-sub" style="font-size:0.78rem;color:#581c87;">0 / 7 ngày chuỗi</p>
+      <span style="font-size:0.7rem;font-weight:800;color:var(--primary);">DANH HIỆU HIỆN TẠI</span>
+      <h2 id="rk-title" style="font-size:1.28rem;margin:3px 0;">Tập Sự</h2>
+      <p id="rk-sub" style="font-size:0.76rem;color:#581c87;">Đã mở khóa 0 / 100 thành tựu</p>
+      <div class="prog-bar"><div id="rk-bar" class="prog-fill" style="width:0%"></div></div>
     </section>
-    <div id="b-list" style="display:flex;flex-direction:column;gap:9px;"></div>
-  </main>
-  <script src="../core/roadmap.js?v=1"></script>
-  <script src="../core/store.js?v=1"></script>
-  <script>
-    const { history } = LabStore.load(), st = LabStore.calcStats(history), rk = LabStore.getRank(st.streak);
-    document.getElementById('rk-title').textContent = rk.name;
-    document.getElementById('rk-sub').textContent = `Chuỗi ${st.streak} / ${rk.next} ngày · Tổng ${st.total} buổi`;
 
-    const hasNight = Object.values(history).some(r => r.start && new Date(r.start).getHours() >= 23);
-    const badges = [
-      { ico: '🌱', title: 'Khởi Hành', desc: 'Hoàn thành buổi học đầu tiên', ok: st.total >= 1 },
-      { ico: '🔥', title: 'Tuần Lễ Thép', desc: 'Đạt chuỗi 7 ngày liên tiếp', ok: st.bestStreak >= 7 },
-      { ico: '🦉', title: 'Cú Đêm Termux', desc: 'Mở phiên học sau 23:00 đêm', ok: hasNight },
-      { ico: '⚔️', title: 'Nửa Chặng Đường', desc: 'Hoàn thành 15 ngày trong lộ trình', ok: st.total >= 15 },
-      { ico: '👑', title: 'Bậc Thầy 30 Ngày', desc: 'Chinh phục trọn vẹn 30 ngày', ok: st.total >= 30 }
-    ];
-    const list = document.getElementById('b-list');
-    badges.forEach(b => {
-      list.insertAdjacentHTML('beforeend', `<div class="badge-item ${b.ok ? 'unlocked' : ''}"><span class="b-ico">${b.ico}</span><div><div class="b-title">${b.title} ${b.ok ? '✓' : '🔒'}</div><div class="b-desc">${b.desc}</div></div></div>`);
+    <div class="tabs">
+      <button class="tab-b active" data-f="all">Tất cả (100)</button>
+      <button class="tab-b" data-f="ok">Đã mở</button>
+      <button class="tab-b" data-f="lock">Chưa mở</button>
+    </div>
+
+    <div id="b-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </main>
+
+  <script src="../core/roadmap.js?v=3"></script>
+  <script src="../core/store.js?v=3"></script>
+  <script src="../core/achievements.js?v=3"></script>
+  <script>
+    const s = LabStore.load(), st = LabStore.calcStats(s.history), rk = LabStore.getRank(st.streak);
+    const m = {
+      ...st, maxSession: 0, count20: 0, count30: 0, count45: 0, count60: 0,
+      night23: 0, crossMidnight: 0, early7: 0, morning: 0, afternoon: 0, evening: 0,
+      sat: 0, sun: 0, weekend: 0, mon: 0, makeup: 0, notedSessions: 0,
+      notesCount: s.notes.length, targetsCount: Object.keys(s.targets).length, quotesCount: s.customQuotes.length, unlockedPre: 0
+    };
+
+    Object.entries(s.history).forEach(([k, r]) => {
+      if (!LabStore.isCompleted(r)) return;
+      if (r.type === 'makeup') m.makeup++;
+      if (r.note && r.note.trim()) m.notedSessions++;
+      const dow = new Date(k + 'T00:00:00').getDay();
+      if (dow === 1) m.mon++;
+      if (dow === 6) { m.sat++; m.weekend++; }
+      if (dow === 0) { m.sun++; m.weekend++; }
+      if (r.start && r.end) {
+        const d1 = new Date(r.start), d2 = new Date(r.end);
+        const mins = Math.max(1, Math.round((d2 - d1) / 60000));
+        if (mins > m.maxSession) m.maxSession = mins;
+        if (mins >= 20) m.count20++;
+        if (mins >= 30) m.count30++;
+        if (mins >= 45) m.count45++;
+        if (mins >= 60) m.count60++;
+        const hr = d1.getHours();
+        if (hr >= 23) m.night23++;
+        else if (hr < 7) m.early7++;
+        else if (hr < 12) m.morning++;
+        else if (hr < 18) m.afternoon++;
+        else m.evening++;
+        if (d1.getDate() !== d2.getDate()) m.crossMidnight++;
+      }
     });
+
+    const evaluated = LAB_ACHIEVEMENTS.map((a) => {
+      const ok = Boolean(a.check(m));
+      if (ok) m.unlockedPre++;
+      return { ...a, ok };
+    });
+
+    const okCount = evaluated.filter(x => x.ok).length;
+    document.getElementById('rk-title').textContent = rk.name;
+    document.getElementById('rk-sub').textContent = `Đã mở khóa ${okCount} / ${evaluated.length} thành tựu`;
+    document.getElementById('rk-bar').style.width = `${Math.round((okCount / evaluated.length) * 100)}%`;
+
+    let filter = 'all';
+    const render = () => {
+      const list = document.getElementById('b-list'); list.innerHTML = '';
+      evaluated.filter(x => filter === 'all' ? true : (filter === 'ok' ? x.ok : !x.ok)).forEach(b => {
+        list.insertAdjacentHTML('beforeend', `<div class="badge-item ${b.ok ? 'unlocked' : ''}"><span class="b-ico">${b.ico}</span><div><div class="b-cat">${b.cat}</div><div class="b-title">${b.title} ${b.ok ? '✓' : '🔒'}</div><div class="b-desc">${b.desc}</div></div></div>`);
+      });
+    };
+
+    document.querySelectorAll('.tab-b').forEach(btn => btn.onclick = () => {
+      document.querySelectorAll('.tab-b').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active'); filter = btn.dataset.f; render();
+    });
+    render();
   </script>
 </body>
 </html>
