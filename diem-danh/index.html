@@ -107,7 +107,7 @@
         s.history[today].end = new Date().toISOString(); s.history[today].note = note.trim(); LabStore.save(s); render(); renderCal();
       }
     };
-    document.getElementById('d-st').ondblclick = () => { const s = LabStore.load(); delete s.history[LabStore.toDateKey(new Date())]; LabStore.save(s); render(); };
+    document.getElementById('d-st').ondblclick = () => { const s = LabStore.load(); delete s.history[LabStore.toDateKey(new Date())]; s.telemetry.cancelledSessions=(s.telemetry.cancelledSessions||0)+1; LabStore.save(s); render(); };
     document.getElementById('c-prev').onclick = () => { if (--m < 0) { m = 11; y--; } renderCal(); };
     document.getElementById('c-next').onclick = () => { if (++m > 11) { m = 0; y++; } renderCal(); };
     render(); renderCal(); setInterval(render, 1000);

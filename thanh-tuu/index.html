@@ -3,55 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Thành Tựu · NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="../core/theme.css?v=3" />
+  <title>165 Thành Tựu · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=6" />
   <style>
     .prog-bar { width: 100%; height: 8px; background: #ede9fe; border-radius: 999px; overflow: hidden; margin-top: 8px; }
     .prog-fill { height: 100%; background: linear-gradient(90deg, var(--emerald-light), var(--primary)); transition: width 0.3s; }
-    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-    .tab-b { padding: 7px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .tab-b { padding: 7px 3px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-size: 0.72rem; font-weight: 800; cursor: pointer; }
     .tab-b.active { background: #fff; color: var(--text-dark); }
-    .badge-item { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-radius: 15px; background: var(--glass-bg); border: 1px solid var(--glass-border); opacity: 0.5; }
+    .badge-item { display: flex; align-items: center; gap: 11px; padding: 11px 13px; border-radius: 15px; background: var(--glass-bg); border: 1px solid var(--glass-border); opacity: 0.52; }
     .badge-item.unlocked { opacity: 1; background: var(--card-bg); color: var(--text-dark); }
+    .badge-item.secret-lock { border-style: dashed; border-color: rgba(253, 224, 71, 0.45); }
+    .badge-item.secret-win { background: linear-gradient(135deg, #fef9c3, #ffffff); border: 1.5px solid #f59e0b; }
     .b-ico { font-size: 1.4rem; flex-shrink: 0; }
     .b-cat { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; color: var(--mint); }
     .badge-item.unlocked .b-cat { color: var(--primary); }
     .b-title { font-size: 0.85rem; font-weight: 800; }
-    .b-desc { font-size: 0.72rem; opacity: 0.82; }
+    .b-desc { font-size: 0.72rem; opacity: 0.84; }
   </style>
 </head>
 <body>
   <header class="top-nav">
     <a href="../" class="back-btn">‹ Lab</a>
-    <span class="page-title">100 Thành Tựu</span>
+    <span class="page-title">165 Thành Tựu</span>
   </header>
   <main class="wrap">
     <section class="white-card" style="text-align:center;">
       <span style="font-size:0.7rem;font-weight:800;color:var(--primary);">DANH HIỆU HIỆN TẠI</span>
       <h2 id="rk-title" style="font-size:1.28rem;margin:3px 0;">Tập Sự</h2>
-      <p id="rk-sub" style="font-size:0.76rem;color:#581c87;">Đã mở khóa 0 / 100 thành tựu</p>
+      <p id="rk-sub" style="font-size:0.76rem;color:#581c87;">Đã mở khóa 0 / 165 thành tựu</p>
       <div class="prog-bar"><div id="rk-bar" class="prog-fill" style="width:0%"></div></div>
     </section>
 
     <div class="tabs">
-      <button class="tab-b active" data-f="all">Tất cả (100)</button>
+      <button class="tab-b active" data-f="all">Tất cả</button>
       <button class="tab-b" data-f="ok">Đã mở</button>
       <button class="tab-b" data-f="lock">Chưa mở</button>
+      <button class="tab-b" data-f="secret">Ẩn ???</button>
     </div>
 
     <div id="b-list" style="display:flex;flex-direction:column;gap:8px;"></div>
   </main>
 
-  <script src="../core/roadmap.js?v=3"></script>
-  <script src="../core/store.js?v=3"></script>
-  <script src="../core/achievements.js?v=3"></script>
+  <script src="../core/roadmap.js?v=6"></script>
+  <script src="../core/store.js?v=6"></script>
+  <script src="../core/achievements.js?v=6"></script>
   <script>
     const s = LabStore.load(), st = LabStore.calcStats(s.history), rk = LabStore.getRank(st.streak);
+    const today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
+    const expDaysSet = new Set(s.expenses.map(x => x.date));
+
     const m = {
-      ...st, maxSession: 0, count20: 0, count30: 0, count45: 0, count60: 0,
-      night23: 0, crossMidnight: 0, early7: 0, morning: 0, afternoon: 0, evening: 0,
+      ...st, maxSession: 0, count20: 0, count30: 0, count45: 0, count60: 0, exact10: 0,
+      night23: 0, lateNight2330: 0, midnightGhost: 0, crossMidnight: 0, early7: 0, morning: 0, afternoon: 0, evening: 0,
       sat: 0, sun: 0, weekend: 0, mon: 0, makeup: 0, notedSessions: 0,
-      notesCount: s.notes.length, targetsCount: Object.keys(s.targets).length, quotesCount: s.customQuotes.length, unlockedPre: 0
+      notesCount: s.notes.length, targetsCount: Object.keys(s.targets).length, quotesCount: s.customQuotes.length,
+      expCount: s.expenses.length,
+      expFood: s.expenses.filter(x => x.cat.includes('Ăn')).length,
+      expBus: s.expenses.filter(x => x.cat.includes('Đi lại')).length,
+      expRent: s.expenses.filter(x => x.cat.includes('Trọ')).length,
+      expDays: expDaysSet.size,
+      monSpend: s.expenses.filter(x => x.date.startsWith(ym)).reduce((a, b) => a + b.amt, 0),
+      budgetMonth: s.budgetMonth, budgetChanged: s.budgetMonth !== 1500,
+      tinySpend: s.expenses.filter(x => x.amt > 0 && x.amt < 5).length,
+      round100Spend: s.expenses.filter(x => x.amt >= 100 && x.amt % 100 === 0).length,
+      courseCount: s.courses.length,
+      courseDone: s.courses.reduce((a, c) => a + c.done, 0),
+      courseMid: s.courses.filter(c => (c.done / Math.max(1, c.total)) >= 0.5).length,
+      courseEnd: s.courses.filter(c => (c.done / Math.max(1, c.total)) >= 0.8).length,
+      courseFull: s.courses.filter(c => c.done >= c.total && c.total > 0).length,
+      cmdCopies: s.telemetry.cmdCopies || 0,
+      customCmdCount: s.customCmds.length,
+      vocabMastered: s.masteredVocab.length,
+      customVocabCount: s.customVocab.length,
+      quizRuns: s.telemetry.quizRuns || 0,
+      perfectQuiz: s.telemetry.perfectQuiz || 0,
+      cancelledSessions: s.telemetry.cancelledSessions || 0,
+      deletedNotes: s.telemetry.deletedNotes || 0,
+      unlockedPre: 0, secretUnlockedPre: 0
     };
 
     Object.entries(s.history).forEach(([k, r]) => {
@@ -65,12 +94,15 @@
       if (r.start && r.end) {
         const d1 = new Date(r.start), d2 = new Date(r.end);
         const mins = Math.max(1, Math.round((d2 - d1) / 60000));
+        if (mins === 10) m.exact10++;
         if (mins > m.maxSession) m.maxSession = mins;
         if (mins >= 20) m.count20++;
         if (mins >= 30) m.count30++;
         if (mins >= 45) m.count45++;
         if (mins >= 60) m.count60++;
-        const hr = d1.getHours();
+        const hr = d1.getHours(), mn = d1.getMinutes();
+        if (hr === 0 && mn <= 5) m.midnightGhost++;
+        if (hr === 23 && mn >= 30) m.lateNight2330++;
         if (hr >= 23) m.night23++;
         else if (hr < 7) m.early7++;
         else if (hr < 12) m.morning++;
@@ -82,7 +114,10 @@
 
     const evaluated = LAB_ACHIEVEMENTS.map((a) => {
       const ok = Boolean(a.check(m));
-      if (ok) m.unlockedPre++;
+      if (ok) {
+        m.unlockedPre++;
+        if (a.secret) m.secretUnlockedPre++;
+      }
       return { ...a, ok };
     });
 
@@ -94,8 +129,19 @@
     let filter = 'all';
     const render = () => {
       const list = document.getElementById('b-list'); list.innerHTML = '';
-      evaluated.filter(x => filter === 'all' ? true : (filter === 'ok' ? x.ok : !x.ok)).forEach(b => {
-        list.insertAdjacentHTML('beforeend', `<div class="badge-item ${b.ok ? 'unlocked' : ''}"><span class="b-ico">${b.ico}</span><div><div class="b-cat">${b.cat}</div><div class="b-title">${b.title} ${b.ok ? '✓' : '🔒'}</div><div class="b-desc">${b.desc}</div></div></div>`);
+      evaluated.filter(x => {
+        if (filter === 'ok') return x.ok;
+        if (filter === 'lock') return !x.ok;
+        if (filter === 'secret') return x.secret;
+        return true;
+      }).forEach(b => {
+        const hide = b.secret && !b.ok;
+        const cls = b.ok ? (b.secret ? 'badge-item unlocked secret-win' : 'badge-item unlocked') : (b.secret ? 'badge-item secret-lock' : 'badge-item');
+        const ico = hide ? '❓' : b.ico;
+        const cat = b.secret ? (b.ok ? '🌟 THÀNH TỰU ẨN' : '🔒 BÍ ẨN') : b.cat;
+        const title = hide ? 'Thành Tựu Ẩn ???' : `${b.title} ${b.ok ? '✓' : '🔒'}`;
+        const desc = hide ? 'Điều kiện bí ẩn — tự khám phá trong quá trình dùng Lab' : b.desc;
+        list.insertAdjacentHTML('beforeend', `<div class="${cls}"><span class="b-ico">${ico}</span><div><div class="b-cat">${cat}</div><div class="b-title">${title}</div><div class="b-desc">${desc}</div></div></div>`);
       });
     };
 

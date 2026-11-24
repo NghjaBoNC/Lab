@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sổ Chi Tiêu · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=4" />
+  <style>
+    .sum-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sum-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 12px; text-align: center; }
+    .sum-box strong { display: block; font-size: 1.25rem; font-weight: 900; color: var(--gold); }
+    .sum-box span { font-size: 0.72rem; color: var(--text-sub); font-weight: 700; }
+    .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .cat-btn { padding: 8px 4px; border-radius: 10px; border: 1.5px solid #ddd6fe; background: #faf5ff; color: var(--text-dark); font-size: 0.72rem; font-weight: 800; cursor: pointer; }
+    .cat-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .bar-bg { width: 100%; height: 8px; background: #ede9fe; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+    .bar-in { height: 100%; background: var(--emerald-light); transition: width 0.25s; }
+    .ex-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--card-bg); color: var(--text-dark); border-radius: 14px; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Ví Phòng Trọ</span>
+  </header>
+  <main class="wrap">
+    <section class="sum-row">
+      <div class="sum-box"><strong id="ex-day">0k</strong><span>Hôm nay</span></div>
+      <div class="sum-box"><strong id="ex-mon" style="color:var(--mint);">0k</strong><span>Tháng này</span></div>
+    </section>
+
+    <section class="white-card" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;font-weight:800;">
+        <span>Hạn mức tháng: <span id="bd-lbl" style="color:var(--primary);">1.500k</span></span>
+        <button id="bd-edit" class="btn-sec" style="padding:3px 9px;font-size:0.72rem;">Đổi trần</button>
+      </div>
+      <div class="bar-bg"><div id="bd-bar" class="bar-in" style="width:0%"></div></div>
+    </section>
+
+    <section class="white-card" style="display:flex;flex-direction:column;gap:9px;">
+      <div style="display:flex;gap:6px;">
+        <input id="ex-amt" type="number" class="input-box" placeholder="Số tiền (nghìn đ, VD: 25)" style="flex:1;" />
+        <input id="ex-note" class="input-box" placeholder="Ghi chú (bún, bus 06...)" style="flex:1.2;" />
+      </div>
+      <div class="cat-grid" id="cats">
+        <button class="cat-btn active" data-c="🍜 Ăn uống">🍜 Ăn</button>
+        <button class="cat-btn" data-c="🚌 Đi lại">🚌 Bus/Xe</button>
+        <button class="cat-btn" data-c="🏠 Trọ/Nét">🏠 Trọ/Nét</button>
+        <button class="cat-btn" data-c="📦 Khác">📦 Khác</button>
+      </div>
+      <button id="ex-add" class="btn-pri">Ghi Khoản Chi</button>
+    </section>
+
+    <div id="ex-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </main>
+
+  <script src="../core/roadmap.js?v=4"></script>
+  <script src="../core/store.js?v=4"></script>
+  <script>
+    let curCat = '🍜 Ăn uống';
+    const fmtK = (k) => k >= 1000 ? `${(k/1000).toFixed(2).replace(/\.00$/,'')}tr` : `${k}k`;
+
+    const render = () => {
+      const s = LabStore.load(), today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
+      const daySum = s.expenses.filter(x => x.date === today).reduce((a, b) => a + b.amt, 0);
+      const monSum = s.expenses.filter(x => x.date.startsWith(ym)).reduce((a, b) => a + b.amt, 0);
+      document.getElementById('ex-day').textContent = fmtK(daySum);
+      document.getElementById('ex-mon').textContent = fmtK(monSum);
+      document.getElementById('bd-lbl').textContent = `${fmtK(monSum)} / ${fmtK(s.budgetMonth)}`;
+      const pct = Math.min(100, Math.round((monSum / Math.max(1, s.budgetMonth)) * 100));
+      const bar = document.getElementById('bd-bar');
+      bar.style.width = pct + '%';
+      bar.style.background = pct >= 90 ? 'var(--danger)' : (pct >= 70 ? 'var(--amber)' : 'var(--emerald-light)');
+
+      const wrap = document.getElementById('ex-list');
+      wrap.innerHTML = s.expenses.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.78rem;color:var(--text-sub);">Chưa có khoản chi nào</div>';
+      s.expenses.slice(0, 25).forEach((x, idx) => {
+        wrap.insertAdjacentHTML('beforeend', `<div class="ex-item"><div><strong>${x.cat}</strong>${x.note ? ' · ' + x.note : ''}<div style="font-size:0.68rem;color:#6b21a8;">${x.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><strong style="color:var(--danger);">-${fmtK(x.amt)}</strong><button data-i="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button></div></div>`);
+      });
+      wrap.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => {
+        const cur = LabStore.load(); cur.expenses.splice(Number(b.dataset.i), 1); LabStore.save(cur); render();
+      });
+    };
+
+    document.querySelectorAll('.cat-btn').forEach(b => b.onclick = () => {
+      document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); curCat = b.dataset.c;
+    });
+    document.getElementById('ex-add').onclick = () => {
+      const amt = Number(document.getElementById('ex-amt').value);
+      if (!amt || amt <= 0) return;
+      const s = LabStore.load();
+      s.expenses.unshift({ date: LabStore.toDateKey(new Date()), amt, cat: curCat, note: document.getElementById('ex-note').value.trim() });
+      LabStore.save(s);
+      document.getElementById('ex-amt').value = ''; document.getElementById('ex-note').value = '';
+      render();
+    };
+    document.getElementById('bd-edit').onclick = () => {
+      const s = LabStore.load();
+      const v = Number(prompt('Nhập hạn mức chi tiêu tháng (nghìn đ, VD: 1500 = 1.5 triệu):', s.budgetMonth));
+      if (v > 0) { s.budgetMonth = v; LabStore.save(s); render(); }
+    };
+    render();
+  </script>
+</body>
+</html>

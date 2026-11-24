@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Đấu Trường Từ Vựng · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=5" />
+  <style>
+    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .tab-b { padding: 8px 4px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-size: 0.74rem; font-weight: 800; cursor: pointer; }
+    .tab-b.active { background: #fff; color: var(--text-dark); }
+    .flash-box { min-height: 170px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 10px; cursor: pointer; }
+    .w-en { font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+    .w-vi { font-size: 1rem; font-weight: 700; color: #4c1d95; }
+    .opt-btn { width: 100%; text-align: left; padding: 11px 13px; border-radius: 12px; border: 1.5px solid #ddd6fe; background: #faf5ff; color: var(--text-dark); font-size: 0.84rem; font-weight: 700; cursor: pointer; }
+    .opt-btn.ok { background: #d1fae5; border-color: var(--emerald); color: #065f46; }
+    .opt-btn.bad { background: #fee2e2; border-color: var(--danger); color: #991b1b; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Đấu Trường Từ Vựng</span>
+  </header>
+  <main class="wrap">
+    <div class="glass-card" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;">
+      <span style="font-size:0.78rem;font-weight:700;color:var(--text-sub);">Vốn từ đã thuộc</span>
+      <strong id="v-stat" style="color:var(--gold);font-size:0.95rem;">0 / 30 từ</strong>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-b active" data-v="card">Lật Thẻ</button>
+      <button class="tab-b" data-v="quiz">Đấu Trường 10 Câu</button>
+      <button class="tab-b" data-v="add">+ Nạp Từ</button>
+    </div>
+
+    <section id="view-card" class="white-card">
+      <div id="fc-area" class="flash-box">
+        <span style="font-size:0.68rem;font-weight:800;color:#7c3aed;">CHẠM ĐỂ LẬT NGHĨA</span>
+        <div id="fc-en" class="w-en">accomplish</div>
+        <div id="fc-vi" class="w-vi hidden">hoàn thành, đạt được</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:7px;margin-top:8px;">
+        <button id="fc-prev" class="btn-sec">‹ Trước</button>
+        <button id="fc-master" class="btn-pri">Đã thuộc ✓</button>
+        <button id="fc-next" class="btn-sec">Sau ›</button>
+      </div>
+    </section>
+
+    <section id="view-quiz" class="white-card hidden" style="display:flex;flex-direction:column;gap:9px;">
+      <div style="display:flex;justify-content:space-between;font-size:0.75rem;font-weight:800;color:var(--primary);">
+        <span id="qz-idx">Câu 1 / 10</span><span id="qz-sc">Điểm: 0</span>
+      </div>
+      <div id="qz-q" style="font-size:1.25rem;font-weight:900;text-align:center;padding:8px 0;"></div>
+      <div id="qz-opts" style="display:flex;flex-direction:column;gap:7px;"></div>
+    </section>
+
+    <section id="view-add" class="white-card hidden" style="display:flex;flex-direction:column;gap:8px;">
+      <strong style="font-size:0.86rem;">Thêm từ vựng TOEIC / VSTEP mới</strong>
+      <input id="nw-en" class="input-box" placeholder="Từ tiếng Anh (VD: prerequisite)" />
+      <input id="nw-vi" class="input-box" placeholder="Nghĩa tiếng Việt (VD: điều kiện tiên quyết)" />
+      <button id="nw-save" class="btn-pri">Lưu Từ Mới</button>
+    </section>
+  </main>
+
+  <script src="../core/roadmap.js?v=5"></script>
+  <script src="../core/store.js?v=5"></script>
+  <script>
+    const BASE_VOCAB = [
+      { en: 'accomplish', vi: 'hoàn thành, đạt được' }, { en: 'adjacent', vi: 'liền kề, sát bên' },
+      { en: 'allocate', vi: 'phân bổ, chỉ định' }, { en: 'anticipate', vi: 'dự đoán, lường trước' },
+      { en: 'arbitrary', vi: 'tùy ý, độc đoán' }, { en: 'benchmark', vi: 'tiêu chuẩn đối chiếu' },
+      { en: 'collaborate', vi: 'cộng tác, hợp tác' }, { en: 'comply', vi: 'tuân thủ, chấp hành' },
+      { en: 'comprehensive', vi: 'toàn diện, bao quát' }, { en: 'consecutive', vi: 'liên tiếp, không ngắt quãng' },
+      { en: 'constraint', vi: 'sự ràng buộc, hạn chế' }, { en: 'crucial', vi: 'cốt yếu, quan trọng' },
+      { en: 'dedicate', vi: 'cống hiến, dành riêng' }, { en: 'deteriorate', vi: 'xấu đi, suy giảm' },
+      { en: 'eligible', vi: 'đủ điều kiện, thích hợp' }, { en: 'enhance', vi: 'nâng cao, tăng cường' },
+      { en: 'equivalent', vi: 'tương đương' }, { en: 'feasible', vi: 'khả thi, thực hiện được' },
+      { en: 'fluctuate', vi: 'dao động, biến động' }, { en: 'implement', vi: 'triển khai, thực thi' },
+      { en: 'inevitable', vi: 'không thể tránh khỏi' }, { en: 'initiative', vi: 'sáng kiến, thế chủ động' },
+      { en: 'mandatory', vi: 'bắt buộc' }, { en: 'negligible', vi: 'không đáng kể' },
+      { en: 'obsolete', vi: 'lỗi thời, cổ hủ' }, { en: 'postpone', vi: 'trì hoãn' },
+      { en: 'preliminary', vi: 'sơ bộ, mở đầu' }, { en: 'proficient', vi: 'thành thạo, giỏi' },
+      { en: 'redundant', vi: 'dư thừa' }, { en: 'vulnerable', vi: 'dễ bị tổn thương / tấn công' }
+    ];
+
+    let idx = 0, flipped = false;
+    const allWords = () => [...LabStore.load().customVocab, ...BASE_VOCAB];
+    const updStat = () => {
+      const s = LabStore.load(), tot = allWords().length;
+      document.getElementById('v-stat').textContent = `${s.masteredVocab.length} / ${tot} từ`;
+    };
+
+    const renderCard = () => {
+      const list = allWords(), w = list[idx % list.length], s = LabStore.load();
+      document.getElementById('fc-en').textContent = w.en;
+      document.getElementById('fc-vi').textContent = w.vi;
+      document.getElementById('fc-vi').classList.toggle('hidden', !flipped);
+      const ok = s.masteredVocab.includes(w.en);
+      const btn = document.getElementById('fc-master');
+      btn.textContent = ok ? 'Đã thuộc ✓' : 'Đánh dấu thuộc';
+      btn.style.background = ok ? 'var(--emerald)' : '';
+      updStat();
+    };
+
+    document.getElementById('fc-area').onclick = () => { flipped = !flipped; renderCard(); };
+    document.getElementById('fc-next').onclick = () => { idx = (idx + 1) % allWords().length; flipped = false; renderCard(); };
+    document.getElementById('fc-prev').onclick = () => { idx = (idx - 1 + allWords().length) % allWords().length; flipped = false; renderCard(); };
+    document.getElementById('fc-master').onclick = () => {
+      const list = allWords(), w = list[idx % list.length], s = LabStore.load();
+      const pos = s.masteredVocab.indexOf(w.en);
+      if (pos >= 0) s.masteredVocab.splice(pos, 1); else s.masteredVocab.push(w.en);
+      LabStore.save(s); renderCard();
+    };
+
+    // Quiz 10 câu
+    let qList = [], qStep = 0, qScore = 0;
+    const startQuiz = () => {
+      const pool = allWords().sort(() => Math.random() - 0.5);
+      qList = pool.slice(0, 10); qStep = 0; qScore = 0; renderQuiz();
+    };
+    const renderQuiz = () => {
+      if (qStep >= qList.length) {
+        LabStore.bump('quizRuns', 1);
+        if (qScore === qList.length) LabStore.bump('perfectQuiz', 1);
+        document.getElementById('qz-q').textContent = `Hoàn thành: ${qScore} / ${qList.length} điểm!`;
+        document.getElementById('qz-opts').innerHTML = `<button class="btn-pri" onclick="startQuiz()">Đấu Lại Lượt Mới</button>`;
+        return;
+      }
+      const cur = qList[qStep], pool = allWords().filter(x => x.en !== cur.en).sort(() => Math.random() - 0.5).slice(0, 3);
+      const opts = [cur, ...pool].sort(() => Math.random() - 0.5);
+      document.getElementById('qz-idx').textContent = `Câu ${qStep + 1} / ${qList.length}`;
+      document.getElementById('qz-sc').textContent = `Điểm: ${qScore}`;
+      document.getElementById('qz-q').textContent = cur.en;
+      const box = document.getElementById('qz-opts'); box.innerHTML = '';
+      opts.forEach(o => {
+        const b = document.createElement('button'); b.className = 'opt-btn'; b.textContent = o.vi;
+        b.onclick = () => {
+          box.querySelectorAll('button').forEach(x => x.disabled = true);
+          if (o.en === cur.en) { b.classList.add('ok'); qScore++; } else { b.classList.add('bad'); }
+          setTimeout(() => { qStep++; renderQuiz(); }, 650);
+        };
+        box.appendChild(b);
+      });
+    };
+
+    document.querySelectorAll('.tabs .tab-b').forEach(b => b.onclick = () => {
+      document.querySelectorAll('.tabs .tab-b').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      const v = b.dataset.v;
+      document.getElementById('view-card').classList.toggle('hidden', v !== 'card');
+      document.getElementById('view-quiz').classList.toggle('hidden', v !== 'quiz');
+      document.getElementById('view-add').classList.toggle('hidden', v !== 'add');
+      if (v === 'quiz') startQuiz();
+    });
+
+    document.getElementById('nw-save').onclick = () => {
+      const en = document.getElementById('nw-en').value.trim(), vi = document.getElementById('nw-vi').value.trim();
+      if (!en || !vi) return;
+      const s = LabStore.load(); s.customVocab.unshift({ en, vi }); LabStore.save(s);
+      document.getElementById('nw-en').value = ''; document.getElementById('nw-vi').value = '';
+      updStat(); alert('Đã thêm từ mới vào bộ thẻ!');
+    };
+    renderCard();
+  </script>
+</body>
+</html>

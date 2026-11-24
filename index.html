@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="core/theme.css?v=2" />
+  <link rel="stylesheet" href="core/theme.css?v=6" />
   <style>
     .hero-lab { display: flex; flex-direction: column; gap: 4px; }
     .lab-sub { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; color: var(--gold); }
@@ -15,17 +15,17 @@
       min-width: 0; overflow: hidden;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
       border-radius: var(--r-card); padding: 13px; text-decoration: none; color: var(--text-light);
-      display: flex; flex-direction: column; justify-content: space-between; min-height: 106px;
+      display: flex; flex-direction: column; justify-content: space-between; min-height: 102px;
       transition: transform 0.14s ease, background 0.14s ease;
     }
     .mod-card:active { transform: scale(0.97); background: rgba(255,255,255,0.2); }
-    .mod-card.featured { grid-column: span 2; background: var(--card-bg); color: var(--text-dark); min-height: 92px; }
+    .mod-card.featured { grid-column: span 2; background: var(--card-bg); color: var(--text-dark); min-height: 90px; }
     .mod-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
     .mod-ico { font-size: 1.2rem; flex-shrink: 0; }
     .mod-tag { font-size: 0.64rem; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: rgba(255,255,255,0.16); color: var(--mint); white-space: nowrap; }
     .mod-card.featured .mod-tag { background: #f3e8ff; color: var(--primary); }
-    .mod-name { font-size: 0.94rem; font-weight: 800; margin-top: 8px; }
-    .mod-live { font-size: 0.73rem; font-weight: 600; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mod-name { font-size: 0.92rem; font-weight: 800; margin-top: 8px; }
+    .mod-live { font-size: 0.72rem; font-weight: 600; color: var(--text-sub); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .mod-card.featured .mod-live { color: #581c87; }
   </style>
 </head>
@@ -37,7 +37,7 @@
 
   <main class="wrap">
     <section class="glass-card hero-lab">
-      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN</span>
+      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 10 MODULE</span>
       <h1 class="lab-title">NghjaBoNC's Lab</h1>
       <p id="lab-quote" class="lab-status"></p>
     </section>
@@ -59,11 +59,35 @@
         </div>
       </a>
 
-      <a href="thong-ke/" class="mod-card">
-        <div class="mod-top"><span class="mod-ico">📊</span><span class="mod-tag">Dữ liệu</span></div>
+      <a href="mon-hoc/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">🎓</span><span id="tag-mh" class="mod-tag">UHL</span></div>
         <div>
-          <div class="mod-name">Thống Kê</div>
-          <div id="live-tk" class="mod-live">0 phút tích lũy</div>
+          <div class="mod-name">Học Phần</div>
+          <div id="live-mh" class="mod-live">Đếm tiết giảng đường</div>
+        </div>
+      </a>
+
+      <a href="chi-tieu/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">💸</span><span id="tag-ct" class="mod-tag">Ví Trọ</span></div>
+        <div>
+          <div class="mod-name">Sổ Chi Tiêu</div>
+          <div id="live-ct" class="mod-live">0k hôm nay</div>
+        </div>
+      </a>
+
+      <a href="lenh/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">💻</span><span class="mod-tag">1-Chạm</span></div>
+        <div>
+          <div class="mod-name">Sổ Tay Lệnh</div>
+          <div id="live-ln" class="mod-live">Linux · C++ · Git</div>
+        </div>
+      </a>
+
+      <a href="tu-vung/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">⚔️</span><span id="tag-tv" class="mod-tag">TOEIC</span></div>
+        <div>
+          <div class="mod-name">Từ Vựng</div>
+          <div id="live-tv" class="mod-live">0 từ đã thuộc</div>
         </div>
       </a>
 
@@ -75,8 +99,16 @@
         </div>
       </a>
 
+      <a href="thong-ke/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">📊</span><span class="mod-tag">Dữ liệu</span></div>
+        <div>
+          <div class="mod-name">Thống Kê</div>
+          <div id="live-tk" class="mod-live">0 phút tích lũy</div>
+        </div>
+      </a>
+
       <a href="thanh-tuu/" class="mod-card">
-        <div class="mod-top"><span class="mod-ico">🏆</span><span id="tag-tt" class="mod-tag">Rank</span></div>
+        <div class="mod-top"><span class="mod-ico">🏆</span><span id="tag-tt" class="mod-tag">165</span></div>
         <div>
           <div class="mod-name">Thành Tựu</div>
           <div id="live-tt" class="mod-live">Tập Sự</div>
@@ -85,17 +117,17 @@
 
       <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;">
         <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">⚙️ Cài Đặt & Sao Lưu</span><span class="mod-tag">JSON Sync</span></div>
-        <div class="mod-live">Xuất / Khôi phục dữ liệu toàn bộ Lab & quản lý Quote</div>
+        <div class="mod-live">Xuất / Khôi phục toàn bộ dữ liệu 10 module & Quote</div>
       </a>
     </section>
   </main>
 
   <script src="core/quotes.js"></script>
-  <script src="core/roadmap.js?v=2"></script>
-  <script src="core/store.js?v=2"></script>
+  <script src="core/roadmap.js?v=6"></script>
+  <script src="core/store.js?v=6"></script>
   <script>
     const s = LabStore.load();
-    const today = LabStore.toDateKey(new Date());
+    const today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
     const st = LabStore.calcStats(s.history);
     const rk = LabStore.getRank(st.streak);
     const rec = s.history[today];
@@ -108,6 +140,20 @@
     document.getElementById('tag-dd').textContent = LabStore.isCompleted(rec) ? 'Đã xong ✓' : (rec && rec.start ? 'Đang học...' : 'Chưa chốt');
     document.getElementById('live-dd').textContent = `Chuỗi ${st.streak} ngày · Kỷ lục ${st.bestStreak} ngày`;
     document.getElementById('live-mt').textContent = (s.targets[today]?.text) || LabStore.getNextLesson(s.history, today);
+
+    const cDone = s.courses.reduce((a, c) => a + c.done, 0);
+    document.getElementById('tag-mh').textContent = `${s.courses.length || 5} môn`;
+    document.getElementById('live-mh').textContent = cDone ? `Đã học ${cDone} tiết` : 'Bấm cập nhật tiết học';
+
+    const daySpend = s.expenses.filter(x => x.date === today).reduce((a, b) => a + b.amt, 0);
+    const monSpend = s.expenses.filter(x => x.date.startsWith(ym)).reduce((a, b) => a + b.amt, 0);
+    document.getElementById('tag-ct').textContent = `${monSpend}k/${s.budgetMonth}k`;
+    document.getElementById('live-ct').textContent = `Hôm nay: ${daySpend}k`;
+
+    document.getElementById('live-ln').textContent = `${14 + s.customCmds.length} lệnh sẵn sàng copy`;
+    document.getElementById('tag-tv').textContent = `${s.masteredVocab.length}/${30 + s.customVocab.length}`;
+    document.getElementById('live-tv').textContent = `Đã thuộc ${s.masteredVocab.length} từ`;
+
     const mins = st.totalMins;
     document.getElementById('live-tk').textContent = `${mins >= 60 ? Math.floor(mins/60)+'h '+(mins%60)+'p' : mins+' phút'} · ${st.total} buổi`;
     document.getElementById('live-gc').textContent = `${s.notes.length} ghi chú đã lưu`;

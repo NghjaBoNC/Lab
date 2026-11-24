@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tiến Độ Học Phần · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=4" />
+  <style>
+    .c-card { background: var(--card-bg); color: var(--text-dark); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .c-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .c-name { font-size: 0.94rem; font-weight: 800; }
+    .c-alert { font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; background: #f3e8ff; color: var(--primary); white-space: nowrap; }
+    .c-alert.mid { background: #fef3c7; color: #b45309; }
+    .c-alert.end { background: #fee2e2; color: #b91c1c; }
+    .c-alert.done { background: #d1fae5; color: #047857; }
+    .p-bg { width: 100%; height: 9px; background: #ede9fe; border-radius: 999px; overflow: hidden; }
+    .p-in { height: 100%; background: linear-gradient(90deg, var(--primary-light), var(--emerald-light)); transition: width 0.25s; }
+    .c-act { display: flex; justify-content: space-between; align-items: center; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Tiến Độ Học Phần</span>
+  </header>
+  <main class="wrap">
+    <section class="white-card" style="display:flex;flex-direction:column;gap:8px;">
+      <strong style="font-size:0.86rem;">Thêm môn học kỳ này</strong>
+      <div style="display:flex;gap:6px;">
+        <input id="m-name" class="input-box" placeholder="Tên môn (VD: Giải tích 2)" style="flex:1.6;" />
+        <input id="m-tot" type="number" class="input-box" value="45" placeholder="Tổng tiết" style="flex:0.7;" />
+        <button id="m-add" class="btn-pri">Thêm</button>
+      </div>
+    </section>
+
+    <div id="m-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </main>
+
+  <script src="../core/roadmap.js?v=4"></script>
+  <script src="../core/store.js?v=4"></script>
+  <script>
+    const DEFAULT_COURSES = [
+      { name: 'Toán cao cấp', done: 0, total: 45 },
+      { name: 'Đại số tuyến tính', done: 0, total: 45 },
+      { name: 'Kiến trúc máy tính', done: 0, total: 45 },
+      { name: 'Lập trình C++', done: 0, total: 60 },
+      { name: 'Tin học ứng dụng', done: 0, total: 30 }
+    ];
+
+    const getCourses = () => {
+      const s = LabStore.load();
+      if (!s.courses.length) { s.courses = DEFAULT_COURSES; LabStore.save(s); }
+      return s;
+    };
+
+    const render = () => {
+      const s = getCourses(), wrap = document.getElementById('m-list');
+      wrap.innerHTML = '';
+      s.courses.forEach((c, idx) => {
+        const pct = Math.min(100, Math.round((c.done / Math.max(1, c.total)) * 100));
+        let badge = `<span class="c-alert">Đang học (${pct}%)</span>`;
+        if (pct >= 100) badge = `<span class="c-alert done">Hoàn tất ✓</span>`;
+        else if (pct >= 80) badge = `<span class="c-alert end">⚠️ Sắp thi (${pct}%)</span>`;
+        else if (pct >= 50) badge = `<span class="c-alert mid">⚡ Giữa kỳ (${pct}%)</span>`;
+
+        wrap.insertAdjacentHTML('beforeend', `
+          <div class="c-card">
+            <div class="c-top"><span class="c-name">${c.name}</span>${badge}</div>
+            <div class="p-bg"><div class="p-in" style="width:${pct}%"></div></div>
+            <div class="c-act">
+              <span style="font-size:0.76rem;font-weight:800;color:#581c87;">Đã học: ${c.done} / ${c.total} tiết</span>
+              <div style="display:flex;gap:5px;">
+                <button class="btn-sec" data-act="sub" data-i="${idx}" style="padding:5px 9px;font-size:0.75rem;">-5t</button>
+                <button class="btn-pri" data-act="add" data-i="${idx}" style="padding:5px 11px;font-size:0.75rem;">+5 tiết</button>
+                <button data-act="del" data-i="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;padding:0 4px;">✕</button>
+              </div>
+            </div>
+          </div>
+        `);
+      });
+
+      wrap.querySelectorAll('button[data-act]').forEach(b => b.onclick = () => {
+        const cur = LabStore.load(), i = Number(b.dataset.i), act = b.dataset.act;
+        if (act === 'add') cur.courses[i].done = Math.min(cur.courses[i].total, cur.courses[i].done + 5);
+        if (act === 'sub') cur.courses[i].done = Math.max(0, cur.courses[i].done - 5);
+        if (act === 'del' && confirm('Xóa môn này?')) cur.courses.splice(i, 1);
+        LabStore.save(cur); render();
+      });
+    };
+
+    document.getElementById('m-add').onclick = () => {
+      const name = document.getElementById('m-name').value.trim();
+      const total = Number(document.getElementById('m-tot').value) || 45;
+      if (!name) return;
+      const s = LabStore.load(); s.courses.push({ name, done: 0, total }); LabStore.save(s);
+      document.getElementById('m-name').value = ''; render();
+    };
+    render();
+  </script>
+</body>
+</html>

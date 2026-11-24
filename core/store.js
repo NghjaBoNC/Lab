@@ -10,6 +10,16 @@ const LabStore = (() => {
     const targets = raw.targets || {};
     const customQuotes = Array.isArray(raw.customQuotes) ? raw.customQuotes : [];
     const notes = Array.isArray(raw.notes) ? raw.notes : [];
+    const expenses = Array.isArray(raw.expenses) ? raw.expenses : [];
+    const budgetMonth = Number(raw.budgetMonth) || 1500;
+    const courses = Array.isArray(raw.courses) ? raw.courses : [];
+    const customCmds = Array.isArray(raw.customCmds) ? raw.customCmds : [];
+    const customVocab = Array.isArray(raw.customVocab) ? raw.customVocab : [];
+    const masteredVocab = Array.isArray(raw.masteredVocab) ? raw.masteredVocab : [];
+    const telemetry = {
+      cmdCopies: 0, quizRuns: 0, perfectQuiz: 0,
+      cancelledSessions: 0, deletedNotes: 0, ...(raw.telemetry || {})
+    };
     let changed = false;
 
     if (!localStorage.getItem(SEED_FLAG) && typeof SEED_HISTORY !== 'undefined') {
@@ -17,12 +27,22 @@ const LabStore = (() => {
       localStorage.setItem(SEED_FLAG, '1');
       changed = true;
     }
-    const state = { history, targets, customQuotes, notes };
+    const state = {
+      history, targets, customQuotes, notes,
+      expenses, budgetMonth, courses,
+      customCmds, customVocab, masteredVocab, telemetry
+    };
     if (changed) save(state);
     return state;
   };
 
   const save = (state) => localStorage.setItem(KEY, JSON.stringify(state));
+  const bump = (field, step = 1) => {
+    const s = load();
+    s.telemetry[field] = (s.telemetry[field] || 0) + step;
+    save(s);
+    return s;
+  };
   const isCompleted = (r) => Boolean(r && (r.type === 'makeup' || (r.start && r.end)));
 
   const calcStats = (history) => {
@@ -62,5 +82,5 @@ const LabStore = (() => {
     return ROADMAP_30[done] || ROADMAP_30[ROADMAP_30.length - 1];
   };
 
-  return { toDateKey, load, save, isCompleted, calcStats, getRank, getNextLesson };
+  return { toDateKey, load, save, bump, isCompleted, calcStats, getRank, getNextLesson };
 })();

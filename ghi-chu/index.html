@@ -35,7 +35,7 @@
         wrap.lastElementChild.querySelector('.note-body').textContent = n.text;
       });
       wrap.querySelectorAll('.del-btn').forEach(b => b.onclick = () => {
-        const cur = LabStore.load(); cur.notes.splice(Number(b.dataset.i), 1); LabStore.save(cur); renderNotes();
+        const cur = LabStore.load(); cur.notes.splice(Number(b.dataset.i), 1); cur.telemetry.deletedNotes=(cur.telemetry.deletedNotes||0)+1; LabStore.save(cur); renderNotes();
       });
     };
     document.getElementById('n-add').onclick = () => {

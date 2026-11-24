@@ -1,6 +1,7 @@
 const LAB_ACHIEVEMENTS = (() => {
   const list = [];
-  const add = (cat, ico, title, desc, fn) => list.push({ cat, ico, title, desc, check: fn });
+  const add = (cat, ico, title, desc, fn, secret = false) =>
+    list.push({ cat, ico, title, desc, check: fn, secret });
 
   // 1. Chuỗi liên tiếp (18)
   [
@@ -121,6 +122,81 @@ const LAB_ACHIEVEMENTS = (() => {
   add('Lab','💻','Code & Dịch Ngược','Hoàn thành Tuần 4 lộ trình (28 buổi)',(m)=>m.total>=28);
   add('Lab','🏁','Tốt Nghiệp Khóa 30','Chinh phục trọn vẹn 30 bài lộ trình',(m)=>m.total>=30);
   add('Lab','🧬','Chủ Nhân NghjaBoNC Lab','Mở khóa ít nhất 50 thành tựu bất kỳ',(m)=>m.unlockedPre>=50);
+
+  // 7. Ví Phòng Trọ — Sổ Chi Tiêu (13)
+  add('Ví Trọ','💸','Đồng Tiền Đầu Tiên','Ghi lại 1 khoản chi tiêu đầu tiên',(m)=>m.expCount>=1);
+  add('Ví Trọ','🧾','Kế Toán Phòng Trọ','Ghi lại 10 khoản chi tiêu',(m)=>m.expCount>=10);
+  add('Ví Trọ','📊','Sổ Sách Minh Bạch','Ghi lại 30 khoản chi tiêu',(m)=>m.expCount>=30);
+  add('Ví Trọ','🏦','Bậc Thầy Kiểm Soát','Ghi lại 75 khoản chi tiêu',(m)=>m.expCount>=75);
+  add('Ví Trọ','💯','Trăm Giao Dịch','Ghi lại 100 khoản chi tiêu',(m)=>m.expCount>=100);
+  add('Ví Trọ','🍜','Ẩm Thực Sinh Viên','Có 5 khoản chi thuộc nhóm Ăn uống',(m)=>m.expFood>=5);
+  add('Ví Trọ','🚌','Tuyến Bus Thân Quen','Có 5 khoản chi thuộc nhóm Đi lại',(m)=>m.expBus>=5);
+  add('Ví Trọ','🏠','Trụ Cột Phòng Trọ','Có 3 khoản chi thuộc nhóm Trọ/Nét',(m)=>m.expRent>=3);
+  add('Ví Trọ','🎚️','Kỷ Luật Tài Chính','Tự điều chỉnh hạn mức chi tiêu tháng',(m)=>m.budgetChanged);
+  add('Ví Trọ','📅','Ghi Chép 3 Ngày','Ghi chi tiêu trong 3 ngày khác nhau',(m)=>m.expDays>=3);
+  add('Ví Trọ','🗓️','Tuần Lễ Chi Tiêu','Ghi chi tiêu trong 7 ngày khác nhau',(m)=>m.expDays>=7);
+  add('Ví Trọ','🛡️','Chi Tiêu Trong Tầm Kiểm Soát','Có ít nhất 10 giao dịch và chưa vượt trần tháng',(m)=>m.expCount>=10&&m.monSpend<=m.budgetMonth);
+  add('Ví Trọ','💎','Quản Lý Chuyên Nghiệp','Ghi chi tiêu trong 20 ngày khác nhau',(m)=>m.expDays>=20);
+
+  // 8. Giảng Đường — Tiến Độ Học Phần (13)
+  add('Học Phần','🎒','Nhập Học Kỳ Mới','Khởi tạo danh sách học phần đại học',(m)=>m.courseCount>=1);
+  add('Học Phần','➕','Mở Rộng Chương Trình','Thêm 1 môn học mới ngoài danh sách gốc',(m)=>m.courseCount>=6);
+  add('Học Phần','🕔','Buổi Học Đầu Tiên','Tích lũy 5 tiết học trên giảng đường',(m)=>m.courseDone>=5);
+  add('Học Phần','📘','Chuyên Cần Tuần Đầu','Tích lũy 25 tiết học trên giảng đường',(m)=>m.courseDone>=25);
+  add('Học Phần','📙','Nửa Trăm Tiết Giảng','Tích lũy 50 tiết học trên giảng đường',(m)=>m.courseDone>=50);
+  add('Học Phần','📗','Cán Mốc 100 Tiết','Tích lũy 100 tiết học trên giảng đường',(m)=>m.courseDone>=100);
+  add('Học Phần','🎓','200 Tiết Giảng Đường','Tích lũy 200 tiết học trên giảng đường',(m)=>m.courseDone>=200);
+  add('Học Phần','⚡','Sẵn Sàng Giữa Kỳ','Đưa 1 học phần đạt tiến độ từ 50%',(m)=>m.courseMid>=1);
+  add('Học Phần','⚠️','Báo Động Ôn Thi','Đưa 1 học phần đạt tiến độ từ 80%',(m)=>m.courseEnd>=1);
+  add('Học Phần','🔥','Nước Rút Toàn Diện','Có 3 học phần đạt tiến độ từ 80%',(m)=>m.courseEnd>=3);
+  add('Học Phần','✅','Qua Môn Đầu Tiên','Hoàn thành 100% số tiết của 1 học phần',(m)=>m.courseFull>=1);
+  add('Học Phần','🏅','Tam Môn Toàn Thắng','Hoàn thành 100% số tiết của 3 học phần',(m)=>m.courseFull>=3);
+  add('Học Phần','👑','Trọn Vẹn Học Kỳ','Hoàn thành 100% số tiết của 5 học phần',(m)=>m.courseFull>=5);
+
+  // 9. Kho Vũ Khí — Sổ Tay Lệnh (12)
+  add('Sổ Lệnh','📋','Một Chạm Tới Termux','Copy 1 lệnh từ Sổ Tay Lệnh',(m)=>m.cmdCopies>=1);
+  add('Sổ Lệnh','⚡','Thao Tác Quen Tay','Copy 10 lần lệnh từ Sổ Tay Lệnh',(m)=>m.cmdCopies>=10);
+  add('Sổ Lệnh','🚀','Tốc Độ Ánh Sáng','Copy 30 lần lệnh từ Sổ Tay Lệnh',(m)=>m.cmdCopies>=30);
+  add('Sổ Lệnh','🤖','Tự Động Hóa Copy','Copy 75 lần lệnh từ Sổ Tay Lệnh',(m)=>m.cmdCopies>=75);
+  add('Sổ Lệnh','🛠️','Chế Tạo Vũ Khí','Tự lưu 1 lệnh cá nhân mới',(m)=>m.customCmdCount>=1);
+  add('Sổ Lệnh','🧰','Hộp Đồ Nghề Riêng','Tự lưu 5 lệnh cá nhân mới',(m)=>m.customCmdCount>=5);
+  add('Sổ Lệnh','🗄️','Kho Lệnh Bách Khoa','Tự lưu 15 lệnh cá nhân mới',(m)=>m.customCmdCount>=15);
+  add('Sổ Lệnh','💻','Dân Chơi CLI','Tự lưu 30 lệnh cá nhân mới',(m)=>m.customCmdCount>=30);
+  add('Sổ Lệnh','🐧','Tín Đồ Linux','Có ít nhất 3 lệnh tự lưu và 15 lần copy',(m)=>m.customCmdCount>=3&&m.cmdCopies>=15);
+  add('Sổ Lệnh','🔐','Pháp Sư Terminal','Có ít nhất 10 lệnh tự lưu và 50 lần copy',(m)=>m.customCmdCount>=10&&m.cmdCopies>=50);
+  add('Sổ Lệnh','⚙️','Kỹ Sư Hệ Thống','Copy lệnh 120 lần',(m)=>m.cmdCopies>=120);
+  add('Sổ Lệnh','👑','Chúa Tể Dòng Lệnh','Tự lưu 50 lệnh cá nhân mới',(m)=>m.customCmdCount>=50);
+
+  // 10. Đấu Trường Từ Vựng (12)
+  add('Từ Vựng','🔤','Từ Vựng Đầu Tiên','Đánh dấu thuộc 1 từ vựng',(m)=>m.vocabMastered>=1);
+  add('Từ Vựng','📖','Mười Từ Cốt Lõi','Đánh dấu thuộc 10 từ vựng',(m)=>m.vocabMastered>=10);
+  add('Từ Vựng','📚','Chinh Phục Kho Gốc','Đánh dấu thuộc 30 từ vựng',(m)=>m.vocabMastered>=30);
+  add('Từ Vựng','🧠','Vốn Từ Vững Vàng','Đánh dấu thuộc 60 từ vựng',(m)=>m.vocabMastered>=60);
+  add('Từ Vựng','🌟','Trăm Từ Thực Chiến','Đánh dấu thuộc 100 từ vựng',(m)=>m.vocabMastered>=100);
+  add('Từ Vựng','👑','Từ Điển Sống','Đánh dấu thuộc 200 từ vựng',(m)=>m.vocabMastered>=200);
+  add('Từ Vựng','➕','Sưu Tầm Từ Mới','Tự nạp thêm 1 từ vựng mới',(m)=>m.customVocabCount>=1);
+  add('Từ Vựng','🗂️','Kho Từ Mở Rộng','Tự nạp thêm 15 từ vựng mới',(m)=>m.customVocabCount>=15);
+  add('Từ Vựng','🏛️','Tự Điển Cá Nhân','Tự nạp thêm 50 từ vựng mới',(m)=>m.customVocabCount>=50);
+  add('Từ Vựng','⚔️','Lên Đài Thử Sức','Hoàn thành 1 lượt Đấu Trường 10 Câu',(m)=>m.quizRuns>=1);
+  add('Từ Vựng','🛡️','Chiến Binh Ngôn Ngữ','Hoàn thành 10 lượt Đấu Trường 10 Câu',(m)=>m.quizRuns>=10);
+  add('Từ Vựng','💯','Tuyệt Đối 10/10','Đạt điểm tối đa 10/10 trong Đấu Trường',(m)=>m.perfectQuiz>=1);
+
+  // 11. 15 THÀNH TỰU ẨN (Secret)
+  add('Bí Ẩn','🦥','Lười Hiệu Quả','Chốt một phiên học dài đúng 10 phút tròn trĩnh',(m)=>m.exact10>=1, true);
+  add('Bí Ẩn','👻','Bóng Ma 0 Giờ','Mở phiên học đúng khung giờ 00:00 – 00:05 sáng',(m)=>m.midnightGhost>=1, true);
+  add('Bí Ẩn','🪙','Từng Xu Đều Quý','Ghi một khoản chi tiêu siêu nhỏ dưới 5k',(m)=>m.tinySpend>=1, true);
+  add('Bí Ẩn','💵','Tròn Trĩnh','Ghi một khoản chi tiêu chẵn tròn bội số 100k',(m)=>m.round100Spend>=1, true);
+  add('Bí Ẩn','⏪','Quay Xe Kịp Lúc','Chạm đúp hủy một phiên học đang chạy',(m)=>m.cancelledSessions>=1, true);
+  add('Bí Ẩn','🗑️','Dọn Dẹp Ký Ức','Xóa bỏ một ghi chú trong Ghi Chú Nhanh',(m)=>m.deletedNotes>=1, true);
+  add('Bí Ẩn','🎯','Thiên Tài Bẩm Sinh','Đạt 10/10 điểm Đấu Trường ngay lượt chơi đầu tiên',(m)=>m.quizRuns===1&&m.perfectQuiz>=1, true);
+  add('Bí Ẩn','🔥','Tam Toàn Tề Tựu','Hoàn hảo cả 3: 10/10 Quiz + 100% một môn học + chuỗi 14 ngày',(m)=>m.perfectQuiz>=1&&m.courseFull>=1&&m.bestStreak>=14, true);
+  add('Bí Ẩn','🧛','Ma Cà Rồng Thực Thụ','Có 3 phiên học mở sau 23:30 đêm',(m)=>m.lateNight2330>=3, true);
+  add('Bí Ẩn','⚡','Tốc Độ Bàn Thờ','Copy lệnh 20 lần mà chưa tự thêm lệnh riêng nào',(m)=>m.cmdCopies>=20&&m.customCmdCount===0, true);
+  add('Bí Ẩn','🍱','Ăn Uống Là Chân Ái','Có trên 80% số khoản chi đều dành cho Ăn uống (tối thiểu 10 khoản)',(m)=>m.expCount>=10&&(m.expFood/m.expCount)>=0.8, true);
+  add('Bí Ẩn','📚','Mọt Sách Giảng Đường','Tích lũy trên 150 tiết học nhưng chưa từng dùng học bù',(m)=>m.courseDone>=150&&m.makeup===0, true);
+  add('Bí Ẩn','🎲','Con Số May Mắn','Tổng số phút học tích lũy rơi vào số chia hết cho 77',(m)=>m.totalMins>=77&&m.totalMins%77===0, true);
+  add('Bí Ẩn','🌌','Chinh Phục Bóng Tối','Mở khóa ít nhất 8 thành tựu ẩn khác',(m)=>m.secretUnlockedPre>=8, true);
+  add('Bí Ẩn','👁️','Kẻ Thấu Thị Hệ Thống','Mở khóa tổng cộng 100 thành tựu bất kỳ trong Lab',(m)=>m.unlockedPre>=100, true);
 
   return list;
 })();
