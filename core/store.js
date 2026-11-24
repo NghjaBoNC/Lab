@@ -11,7 +11,7 @@ const LabStore = (() => {
     const customQuotes = Array.isArray(raw.customQuotes) ? raw.customQuotes : [];
     const notes = Array.isArray(raw.notes) ? raw.notes : [];
     const expenses = Array.isArray(raw.expenses) ? raw.expenses : [];
-    const budgetMonth = Number(raw.budgetMonth) || 1500;
+    const budgetMonth = Number(raw.budgetMonth) || 2000; const walletBalance = raw.walletBalance !== undefined ? Number(raw.walletBalance) : 0;
     const courses = Array.isArray(raw.courses) ? raw.courses : [];
     const customCmds = Array.isArray(raw.customCmds) ? raw.customCmds : [];
     const customVocab = Array.isArray(raw.customVocab) ? raw.customVocab : [];
@@ -29,7 +29,7 @@ const LabStore = (() => {
     }
     const state = {
       history, targets, customQuotes, notes,
-      expenses, budgetMonth, courses,
+      expenses, budgetMonth, walletBalance, courses,
       customCmds, customVocab, masteredVocab, telemetry
     };
     if (changed) save(state);

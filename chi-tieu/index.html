@@ -4,15 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Ví Phòng Trọ · NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="../core/theme.css?v=8" />
+  <link rel="stylesheet" href="../core/theme.css?v=9" />
   <style>
-    .bal-card { background: var(--card-bg); color: var(--text-dark); border-radius: 18px; padding: 14px; text-align: center; }
-    .bal-val { font-size: 1.65rem; font-weight: 900; color: var(--emerald); margin: 2px 0; }
+    .bal-card { background: var(--card-bg); color: var(--text-dark); border-radius: 18px; padding: 15px; text-align: center; }
+    .bal-top { display: flex; justify-content: space-between; align-items: center; }
+    .bal-val { font-size: 1.85rem; font-weight: 900; color: var(--emerald); margin: 4px 0; }
     .bal-val.neg { color: var(--danger); }
-    .sum-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .sum-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 10px; text-align: center; }
-    .sum-box strong { display: block; font-size: 1.15rem; font-weight: 900; }
-    .sum-box span { font-size: 0.7rem; color: var(--text-sub); font-weight: 700; }
     .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: #f3e8ff; padding: 4px; border-radius: 12px; }
     .m-btn { padding: 8px; border: none; border-radius: 9px; font-size: 0.8rem; font-weight: 800; cursor: pointer; background: transparent; color: #581c87; }
     .m-btn.active.out { background: var(--danger); color: #fff; }
@@ -28,23 +25,21 @@
 <body>
   <header class="top-nav">
     <a href="../" class="back-btn">‹ Lab</a>
-    <span class="page-title">Ví Phòng Trọ (Thu / Chi)</span>
+    <span class="page-title">Ví Phòng Trọ</span>
   </header>
   <main class="wrap">
     <section class="bal-card">
-      <span style="font-size:0.7rem;font-weight:800;color:#6b21a8;letter-spacing:0.5px;">SỐ TIỀN HIỆN CÓ</span>
+      <div class="bal-top">
+        <span style="font-size:0.7rem;font-weight:800;color:#6b21a8;">SỐ TIỀN HIỆN CÓ</span>
+        <button id="bal-set" class="btn-sec" style="padding:3px 9px;font-size:0.7rem;">✎ Đặt số dư gốc</button>
+      </div>
       <div id="ex-bal" class="bal-val">0k</div>
       <div id="ex-sub" style="font-size:0.72rem;font-weight:700;color:#581c87;">Hôm nay: Chi 0k · Thu 0k</div>
     </section>
 
-    <section class="sum-row">
-      <div class="sum-box"><strong id="ex-in" style="color:var(--mint);">+0k</strong><span>Tổng Thu</span></div>
-      <div class="sum-box"><strong id="ex-out" style="color:#fda4af;">-0k</strong><span>Tổng Chi</span></div>
-    </section>
-
     <section class="white-card" style="display:flex;flex-direction:column;gap:6px;">
       <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.76rem;font-weight:800;">
-        <span>Hạn mức chi tháng: <span id="bd-lbl" style="color:var(--primary);">0k / 2tr</span></span>
+        <span>Đã chi tháng này: <span id="bd-lbl" style="color:var(--primary);">0k / 2tr</span></span>
         <button id="bd-edit" class="btn-sec" style="padding:3px 9px;font-size:0.7rem;">Đổi trần</button>
       </div>
       <div class="bar-bg"><div id="bd-bar" class="bar-in" style="width:0%"></div></div>
@@ -52,22 +47,22 @@
 
     <section class="white-card" style="display:flex;flex-direction:column;gap:9px;">
       <div class="mode-tabs">
-        <button id="tab-out" class="m-btn active out">➖ Khoản Chi</button>
-        <button id="tab-in" class="m-btn">➕ Khoản Thu</button>
+        <button id="tab-out" class="m-btn active out">➖ Chi tiền (-)</button>
+        <button id="tab-in" class="m-btn">➕ Thu về (+)</button>
       </div>
       <div style="display:flex;gap:6px;">
-        <input id="ex-amt" type="number" class="input-box" placeholder="Số tiền (nghìn đ, VD: 50)" style="flex:1;" />
+        <input id="ex-amt" type="number" class="input-box" placeholder="Số tiền (nghìn đ, VD: 20)" style="flex:1;" />
         <input id="ex-note" class="input-box" placeholder="Ghi chú..." style="flex:1.2;" />
       </div>
       <div class="cat-grid" id="cats"></div>
-      <button id="ex-add" class="btn-pri" style="background:var(--danger);">Ghi Khoản Chi</button>
+      <button id="ex-add" class="btn-pri" style="background:var(--danger);">Cập Nhật Chi (-)</button>
     </section>
 
     <div id="ex-list" style="display:flex;flex-direction:column;gap:8px;"></div>
   </main>
 
-  <script src="../core/roadmap.js?v=8"></script>
-  <script src="../core/store.js?v=8"></script>
+  <script src="../core/roadmap.js?v=9"></script>
+  <script src="../core/store.js?v=9"></script>
   <script>
     const CATS_OUT = [
       { lbl: '🍜 Ăn', val: '🍜 Ăn uống' },
@@ -76,9 +71,9 @@
       { lbl: '📦 Khác', val: '📦 Khác' }
     ];
     const CATS_IN = [
-      { lbl: '👨‍👩‍👦 Gia đình', val: '👨‍👩‍👦 Gia đình gửi' },
+      { lbl: '👨‍👩‍👦 Gia đình', val: '👨‍👩‍👦 Gia đình' },
       { lbl: '💼 Làm thêm', val: '💼 Làm thêm' },
-      { lbl: '🎁 Thưởng', val: '🎁 Thưởng/Lì xì' },
+      { lbl: '🎁 Thưởng', val: '🎁 Thưởng' },
       { lbl: '💰 Thu khác', val: '💰 Thu khác' }
     ];
 
@@ -108,20 +103,14 @@
     const render = () => {
       const s = LabStore.load(), today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
       const isInc = (x) => x.type === 'in';
-      const totIn = s.expenses.filter(isInc).reduce((a, b) => a + b.amt, 0);
-      const totOut = s.expenses.filter(x => !isInc(x)).reduce((a, b) => a + b.amt, 0);
-      const bal = totIn - totOut;
-
       const dayOut = s.expenses.filter(x => x.date === today && !isInc(x)).reduce((a, b) => a + b.amt, 0);
       const dayIn = s.expenses.filter(x => x.date === today && isInc(x)).reduce((a, b) => a + b.amt, 0);
       const monOut = s.expenses.filter(x => x.date.startsWith(ym) && !isInc(x)).reduce((a, b) => a + b.amt, 0);
 
       const balEl = document.getElementById('ex-bal');
-      balEl.textContent = fmtK(bal);
-      balEl.classList.toggle('neg', bal < 0);
-      document.getElementById('ex-sub').textContent = `Hôm nay: Thu +${fmtK(dayIn)} · Chi -${fmtK(dayOut)}`;
-      document.getElementById('ex-in').textContent = `+${fmtK(totIn)}`;
-      document.getElementById('ex-out').textContent = `-${fmtK(totOut)}`;
+      balEl.textContent = fmtK(s.walletBalance);
+      balEl.classList.toggle('neg', s.walletBalance < 0);
+      document.getElementById('ex-sub').textContent = `Hôm nay: Chi ${fmtK(dayOut)} · Thu ${fmtK(dayIn)}`;
 
       document.getElementById('bd-lbl').textContent = `${fmtK(monOut)} / ${fmtK(s.budgetMonth)}`;
       const pct = Math.min(100, Math.round((monOut / Math.max(1, s.budgetMonth)) * 100));
@@ -130,15 +119,18 @@
       bar.style.background = pct >= 90 ? 'var(--danger)' : (pct >= 70 ? 'var(--amber)' : 'var(--emerald-light)');
 
       const wrap = document.getElementById('ex-list');
-      wrap.innerHTML = s.expenses.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.78rem;color:var(--text-sub);">Chưa có giao dịch nào</div>';
+      wrap.innerHTML = s.expenses.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.78rem;color:var(--text-sub);">Chưa có biến động số dư nào</div>';
       s.expenses.slice(0, 30).forEach((x, idx) => {
         const inc = isInc(x);
         const color = inc ? 'var(--emerald)' : 'var(--danger)';
         const prefix = inc ? '+' : '-';
-        wrap.insertAdjacentHTML('beforeend', `<div class="ex-item"><div><strong>${x.cat}</strong>${x.note ? ' · ' + x.note : ''}<div style="font-size:0.68rem;color:#6b21a8;">${x.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><strong style="color:${color};">${prefix}${fmtK(x.amt)}</strong><button data-i="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button></div></div>`);
+        const snap = x.after !== undefined ? ` → Còn <b>${fmtK(x.after)}</b>` : '';
+        wrap.insertAdjacentHTML('beforeend', `<div class="ex-item"><div><strong>${x.cat}</strong>${x.note ? ' · ' + x.note : ''}<div style="font-size:0.68rem;color:#6b21a8;">${x.date}${snap}</div></div><div style="display:flex;align-items:center;gap:8px;"><strong style="color:${color};">${prefix}${fmtK(x.amt)}</strong><button data-i="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button></div></div>`);
       });
       wrap.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => {
-        const cur = LabStore.load(); cur.expenses.splice(Number(b.dataset.i), 1); LabStore.save(cur); render();
+        const cur = LabStore.load(), i = Number(b.dataset.i), item = cur.expenses[i];
+        cur.walletBalance += (item.type === 'in' ? -item.amt : item.amt);
+        cur.expenses.splice(i, 1); LabStore.save(cur); render();
       });
     };
 
@@ -147,7 +139,7 @@
       document.getElementById('tab-out').className = 'm-btn active out';
       document.getElementById('tab-in').className = 'm-btn';
       const btn = document.getElementById('ex-add');
-      btn.textContent = 'Ghi Khoản Chi'; btn.style.background = 'var(--danger)';
+      btn.textContent = 'Cập Nhật Chi (-)'; btn.style.background = 'var(--danger)';
       renderCats();
     };
     document.getElementById('tab-in').onclick = () => {
@@ -155,7 +147,7 @@
       document.getElementById('tab-in').className = 'm-btn active in';
       document.getElementById('tab-out').className = 'm-btn';
       const btn = document.getElementById('ex-add');
-      btn.textContent = 'Ghi Khoản Thu'; btn.style.background = 'var(--emerald)';
+      btn.textContent = 'Cập Nhật Thu (+)'; btn.style.background = 'var(--emerald)';
       renderCats();
     };
 
@@ -163,11 +155,23 @@
       const amt = Number(document.getElementById('ex-amt').value);
       if (!amt || amt <= 0) return;
       const s = LabStore.load();
-      s.expenses.unshift({ type: mode, date: LabStore.toDateKey(new Date()), amt, cat: curCat, note: document.getElementById('ex-note').value.trim() });
+      s.walletBalance += (mode === 'in' ? amt : -amt);
+      s.expenses.unshift({ type: mode, date: LabStore.toDateKey(new Date()), amt, after: s.walletBalance, cat: curCat, note: document.getElementById('ex-note').value.trim() });
       LabStore.save(s);
       document.getElementById('ex-amt').value = ''; document.getElementById('ex-note').value = '';
       render();
     };
+
+    document.getElementById('bal-set').onclick = () => {
+      const s = LabStore.load();
+      const v = prompt('Nhập số tiền hiện có thực tế trong ví (nghìn đ, VD: 60 = 60k):', s.walletBalance);
+      if (v !== null && v.trim() !== '' && !isNaN(Number(v))) {
+        s.walletBalance = Number(v);
+        s.expenses.unshift({ type: 'in', date: LabStore.toDateKey(new Date()), amt: 0, after: s.walletBalance, cat: '⚙️ Khớp số dư', note: 'Đặt mốc ví' });
+        LabStore.save(s); render();
+      }
+    };
+
     document.getElementById('bd-edit').onclick = () => {
       const s = LabStore.load();
       const v = Number(prompt('Nhập hạn mức chi tiêu tháng (nghìn đ, VD: 2000 = 2 triệu):', s.budgetMonth));
