@@ -3,17 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Sổ Chi Tiêu · NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="../core/theme.css?v=4" />
+  <title>Ví Phòng Trọ · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=8" />
   <style>
+    .bal-card { background: var(--card-bg); color: var(--text-dark); border-radius: 18px; padding: 14px; text-align: center; }
+    .bal-val { font-size: 1.65rem; font-weight: 900; color: var(--emerald); margin: 2px 0; }
+    .bal-val.neg { color: var(--danger); }
     .sum-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .sum-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 12px; text-align: center; }
-    .sum-box strong { display: block; font-size: 1.25rem; font-weight: 900; color: var(--gold); }
-    .sum-box span { font-size: 0.72rem; color: var(--text-sub); font-weight: 700; }
+    .sum-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 10px; text-align: center; }
+    .sum-box strong { display: block; font-size: 1.15rem; font-weight: 900; }
+    .sum-box span { font-size: 0.7rem; color: var(--text-sub); font-weight: 700; }
+    .mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: #f3e8ff; padding: 4px; border-radius: 12px; }
+    .m-btn { padding: 8px; border: none; border-radius: 9px; font-size: 0.8rem; font-weight: 800; cursor: pointer; background: transparent; color: #581c87; }
+    .m-btn.active.out { background: var(--danger); color: #fff; }
+    .m-btn.active.in { background: var(--emerald); color: #fff; }
     .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
     .cat-btn { padding: 8px 4px; border-radius: 10px; border: 1.5px solid #ddd6fe; background: #faf5ff; color: var(--text-dark); font-size: 0.72rem; font-weight: 800; cursor: pointer; }
     .cat-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .bar-bg { width: 100%; height: 8px; background: #ede9fe; border-radius: 999px; overflow: hidden; margin-top: 6px; }
+    .bar-bg { width: 100%; height: 7px; background: #ede9fe; border-radius: 999px; overflow: hidden; margin-top: 6px; }
     .bar-in { height: 100%; background: var(--emerald-light); transition: width 0.25s; }
     .ex-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: var(--card-bg); color: var(--text-dark); border-radius: 14px; font-size: 0.82rem; }
   </style>
@@ -21,86 +28,153 @@
 <body>
   <header class="top-nav">
     <a href="../" class="back-btn">‹ Lab</a>
-    <span class="page-title">Ví Phòng Trọ</span>
+    <span class="page-title">Ví Phòng Trọ (Thu / Chi)</span>
   </header>
   <main class="wrap">
-    <section class="sum-row">
-      <div class="sum-box"><strong id="ex-day">0k</strong><span>Hôm nay</span></div>
-      <div class="sum-box"><strong id="ex-mon" style="color:var(--mint);">0k</strong><span>Tháng này</span></div>
+    <section class="bal-card">
+      <span style="font-size:0.7rem;font-weight:800;color:#6b21a8;letter-spacing:0.5px;">SỐ TIỀN HIỆN CÓ</span>
+      <div id="ex-bal" class="bal-val">0k</div>
+      <div id="ex-sub" style="font-size:0.72rem;font-weight:700;color:#581c87;">Hôm nay: Chi 0k · Thu 0k</div>
     </section>
 
-    <section class="white-card" style="display:flex;flex-direction:column;gap:8px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;font-weight:800;">
-        <span>Hạn mức tháng: <span id="bd-lbl" style="color:var(--primary);">1.500k</span></span>
-        <button id="bd-edit" class="btn-sec" style="padding:3px 9px;font-size:0.72rem;">Đổi trần</button>
+    <section class="sum-row">
+      <div class="sum-box"><strong id="ex-in" style="color:var(--mint);">+0k</strong><span>Tổng Thu</span></div>
+      <div class="sum-box"><strong id="ex-out" style="color:#fda4af;">-0k</strong><span>Tổng Chi</span></div>
+    </section>
+
+    <section class="white-card" style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.76rem;font-weight:800;">
+        <span>Hạn mức chi tháng: <span id="bd-lbl" style="color:var(--primary);">0k / 2tr</span></span>
+        <button id="bd-edit" class="btn-sec" style="padding:3px 9px;font-size:0.7rem;">Đổi trần</button>
       </div>
       <div class="bar-bg"><div id="bd-bar" class="bar-in" style="width:0%"></div></div>
     </section>
 
     <section class="white-card" style="display:flex;flex-direction:column;gap:9px;">
+      <div class="mode-tabs">
+        <button id="tab-out" class="m-btn active out">➖ Khoản Chi</button>
+        <button id="tab-in" class="m-btn">➕ Khoản Thu</button>
+      </div>
       <div style="display:flex;gap:6px;">
-        <input id="ex-amt" type="number" class="input-box" placeholder="Số tiền (nghìn đ, VD: 25)" style="flex:1;" />
-        <input id="ex-note" class="input-box" placeholder="Ghi chú (bún, bus 06...)" style="flex:1.2;" />
+        <input id="ex-amt" type="number" class="input-box" placeholder="Số tiền (nghìn đ, VD: 50)" style="flex:1;" />
+        <input id="ex-note" class="input-box" placeholder="Ghi chú..." style="flex:1.2;" />
       </div>
-      <div class="cat-grid" id="cats">
-        <button class="cat-btn active" data-c="🍜 Ăn uống">🍜 Ăn</button>
-        <button class="cat-btn" data-c="🚌 Đi lại">🚌 Bus/Xe</button>
-        <button class="cat-btn" data-c="🏠 Trọ/Nét">🏠 Trọ/Nét</button>
-        <button class="cat-btn" data-c="📦 Khác">📦 Khác</button>
-      </div>
-      <button id="ex-add" class="btn-pri">Ghi Khoản Chi</button>
+      <div class="cat-grid" id="cats"></div>
+      <button id="ex-add" class="btn-pri" style="background:var(--danger);">Ghi Khoản Chi</button>
     </section>
 
     <div id="ex-list" style="display:flex;flex-direction:column;gap:8px;"></div>
   </main>
 
-  <script src="../core/roadmap.js?v=4"></script>
-  <script src="../core/store.js?v=4"></script>
+  <script src="../core/roadmap.js?v=8"></script>
+  <script src="../core/store.js?v=8"></script>
   <script>
-    let curCat = '🍜 Ăn uống';
-    const fmtK = (k) => k >= 1000 ? `${(k/1000).toFixed(2).replace(/\.00$/,'')}tr` : `${k}k`;
+    const CATS_OUT = [
+      { lbl: '🍜 Ăn', val: '🍜 Ăn uống' },
+      { lbl: '🚌 Bus/Xe', val: '🚌 Đi lại' },
+      { lbl: '🏠 Trọ/Nét', val: '🏠 Trọ/Nét' },
+      { lbl: '📦 Khác', val: '📦 Khác' }
+    ];
+    const CATS_IN = [
+      { lbl: '👨‍👩‍👦 Gia đình', val: '👨‍👩‍👦 Gia đình gửi' },
+      { lbl: '💼 Làm thêm', val: '💼 Làm thêm' },
+      { lbl: '🎁 Thưởng', val: '🎁 Thưởng/Lì xì' },
+      { lbl: '💰 Thu khác', val: '💰 Thu khác' }
+    ];
+
+    let mode = 'out', curCat = CATS_OUT[0].val;
+    const fmtK = (k) => {
+      const sign = k < 0 ? '-' : '';
+      const abs = Math.abs(k);
+      return sign + (abs >= 1000 ? `${(abs/1000).toFixed(2).replace(/\.?0+$/,'')}tr` : `${abs}k`);
+    };
+
+    const renderCats = () => {
+      const list = mode === 'out' ? CATS_OUT : CATS_IN;
+      curCat = list[0].val;
+      const box = document.getElementById('cats'); box.innerHTML = '';
+      list.forEach((c, i) => {
+        const b = document.createElement('button');
+        b.className = 'cat-btn' + (i === 0 ? ' active' : '');
+        b.textContent = c.lbl;
+        b.onclick = () => {
+          box.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
+          b.classList.add('active'); curCat = c.val;
+        };
+        box.appendChild(b);
+      });
+    };
 
     const render = () => {
       const s = LabStore.load(), today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
-      const daySum = s.expenses.filter(x => x.date === today).reduce((a, b) => a + b.amt, 0);
-      const monSum = s.expenses.filter(x => x.date.startsWith(ym)).reduce((a, b) => a + b.amt, 0);
-      document.getElementById('ex-day').textContent = fmtK(daySum);
-      document.getElementById('ex-mon').textContent = fmtK(monSum);
-      document.getElementById('bd-lbl').textContent = `${fmtK(monSum)} / ${fmtK(s.budgetMonth)}`;
-      const pct = Math.min(100, Math.round((monSum / Math.max(1, s.budgetMonth)) * 100));
+      const isInc = (x) => x.type === 'in';
+      const totIn = s.expenses.filter(isInc).reduce((a, b) => a + b.amt, 0);
+      const totOut = s.expenses.filter(x => !isInc(x)).reduce((a, b) => a + b.amt, 0);
+      const bal = totIn - totOut;
+
+      const dayOut = s.expenses.filter(x => x.date === today && !isInc(x)).reduce((a, b) => a + b.amt, 0);
+      const dayIn = s.expenses.filter(x => x.date === today && isInc(x)).reduce((a, b) => a + b.amt, 0);
+      const monOut = s.expenses.filter(x => x.date.startsWith(ym) && !isInc(x)).reduce((a, b) => a + b.amt, 0);
+
+      const balEl = document.getElementById('ex-bal');
+      balEl.textContent = fmtK(bal);
+      balEl.classList.toggle('neg', bal < 0);
+      document.getElementById('ex-sub').textContent = `Hôm nay: Thu +${fmtK(dayIn)} · Chi -${fmtK(dayOut)}`;
+      document.getElementById('ex-in').textContent = `+${fmtK(totIn)}`;
+      document.getElementById('ex-out').textContent = `-${fmtK(totOut)}`;
+
+      document.getElementById('bd-lbl').textContent = `${fmtK(monOut)} / ${fmtK(s.budgetMonth)}`;
+      const pct = Math.min(100, Math.round((monOut / Math.max(1, s.budgetMonth)) * 100));
       const bar = document.getElementById('bd-bar');
       bar.style.width = pct + '%';
       bar.style.background = pct >= 90 ? 'var(--danger)' : (pct >= 70 ? 'var(--amber)' : 'var(--emerald-light)');
 
       const wrap = document.getElementById('ex-list');
-      wrap.innerHTML = s.expenses.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.78rem;color:var(--text-sub);">Chưa có khoản chi nào</div>';
-      s.expenses.slice(0, 25).forEach((x, idx) => {
-        wrap.insertAdjacentHTML('beforeend', `<div class="ex-item"><div><strong>${x.cat}</strong>${x.note ? ' · ' + x.note : ''}<div style="font-size:0.68rem;color:#6b21a8;">${x.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><strong style="color:var(--danger);">-${fmtK(x.amt)}</strong><button data-i="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button></div></div>`);
+      wrap.innerHTML = s.expenses.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.78rem;color:var(--text-sub);">Chưa có giao dịch nào</div>';
+      s.expenses.slice(0, 30).forEach((x, idx) => {
+        const inc = isInc(x);
+        const color = inc ? 'var(--emerald)' : 'var(--danger)';
+        const prefix = inc ? '+' : '-';
+        wrap.insertAdjacentHTML('beforeend', `<div class="ex-item"><div><strong>${x.cat}</strong>${x.note ? ' · ' + x.note : ''}<div style="font-size:0.68rem;color:#6b21a8;">${x.date}</div></div><div style="display:flex;align-items:center;gap:8px;"><strong style="color:${color};">${prefix}${fmtK(x.amt)}</strong><button data-i="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button></div></div>`);
       });
       wrap.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => {
         const cur = LabStore.load(); cur.expenses.splice(Number(b.dataset.i), 1); LabStore.save(cur); render();
       });
     };
 
-    document.querySelectorAll('.cat-btn').forEach(b => b.onclick = () => {
-      document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active'); curCat = b.dataset.c;
-    });
+    document.getElementById('tab-out').onclick = () => {
+      mode = 'out';
+      document.getElementById('tab-out').className = 'm-btn active out';
+      document.getElementById('tab-in').className = 'm-btn';
+      const btn = document.getElementById('ex-add');
+      btn.textContent = 'Ghi Khoản Chi'; btn.style.background = 'var(--danger)';
+      renderCats();
+    };
+    document.getElementById('tab-in').onclick = () => {
+      mode = 'in';
+      document.getElementById('tab-in').className = 'm-btn active in';
+      document.getElementById('tab-out').className = 'm-btn';
+      const btn = document.getElementById('ex-add');
+      btn.textContent = 'Ghi Khoản Thu'; btn.style.background = 'var(--emerald)';
+      renderCats();
+    };
+
     document.getElementById('ex-add').onclick = () => {
       const amt = Number(document.getElementById('ex-amt').value);
       if (!amt || amt <= 0) return;
       const s = LabStore.load();
-      s.expenses.unshift({ date: LabStore.toDateKey(new Date()), amt, cat: curCat, note: document.getElementById('ex-note').value.trim() });
+      s.expenses.unshift({ type: mode, date: LabStore.toDateKey(new Date()), amt, cat: curCat, note: document.getElementById('ex-note').value.trim() });
       LabStore.save(s);
       document.getElementById('ex-amt').value = ''; document.getElementById('ex-note').value = '';
       render();
     };
     document.getElementById('bd-edit').onclick = () => {
       const s = LabStore.load();
-      const v = Number(prompt('Nhập hạn mức chi tiêu tháng (nghìn đ, VD: 1500 = 1.5 triệu):', s.budgetMonth));
+      const v = Number(prompt('Nhập hạn mức chi tiêu tháng (nghìn đ, VD: 2000 = 2 triệu):', s.budgetMonth));
       if (v > 0) { s.budgetMonth = v; LabStore.save(s); render(); }
     };
-    render();
+
+    renderCats(); render();
   </script>
 </body>
 </html>

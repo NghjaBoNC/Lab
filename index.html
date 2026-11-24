@@ -145,10 +145,10 @@
     document.getElementById('tag-mh').textContent = `${s.courses.length || 5} môn`;
     document.getElementById('live-mh').textContent = cDone ? `Đã học ${cDone} tiết` : 'Bấm cập nhật tiết học';
 
-    const daySpend = s.expenses.filter(x => x.date === today).reduce((a, b) => a + b.amt, 0);
-    const monSpend = s.expenses.filter(x => x.date.startsWith(ym)).reduce((a, b) => a + b.amt, 0);
+    const totIn = s.expenses.filter(x => x.type === 'in').reduce((a, b) => a + b.amt, 0); const totOut = s.expenses.filter(x => x.type !== 'in').reduce((a, b) => a + b.amt, 0); const bal = totIn - totOut;
+    const monSpend = s.expenses.filter(x => x.date.startsWith(ym) && x.type !== 'in').reduce((a, b) => a + b.amt, 0);
     document.getElementById('tag-ct').textContent = `${monSpend}k/${s.budgetMonth}k`;
-    document.getElementById('live-ct').textContent = `Hôm nay: ${daySpend}k`;
+    document.getElementById('live-ct').textContent = `Còn: ${bal >= 1000 || bal <= -1000 ? (bal/1000).toFixed(2).replace(/\.?0+$/,'')+'tr' : bal+'k'}`;
 
     document.getElementById('live-ln').textContent = `${14 + s.customCmds.length} lệnh sẵn sàng copy`;
     document.getElementById('tag-tv').textContent = `${s.masteredVocab.length}/${30 + s.customVocab.length}`;
