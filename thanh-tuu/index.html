@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Thành Tựu · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=1" />
+  <style>
+    .badge-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 16px; background: var(--glass-bg); border: 1px solid var(--glass-border); opacity: 0.48; }
+    .badge-item.unlocked { opacity: 1; background: var(--card-bg); color: var(--text-dark); }
+    .b-ico { font-size: 1.5rem; }
+    .b-title { font-size: 0.88rem; font-weight: 800; }
+    .b-desc { font-size: 0.74rem; opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Thành Tựu & Danh Hiệu</span>
+  </header>
+  <main class="wrap">
+    <section class="white-card" style="text-align:center;">
+      <span style="font-size:0.72rem;font-weight:800;color:var(--primary);">DANH HIỆU HIỆN TẠI</span>
+      <h2 id="rk-title" style="font-size:1.3rem;margin:4px 0;">Tập Sự</h2>
+      <p id="rk-sub" style="font-size:0.78rem;color:#581c87;">0 / 7 ngày chuỗi</p>
+    </section>
+    <div id="b-list" style="display:flex;flex-direction:column;gap:9px;"></div>
+  </main>
+  <script src="../core/roadmap.js?v=1"></script>
+  <script src="../core/store.js?v=1"></script>
+  <script>
+    const { history } = LabStore.load(), st = LabStore.calcStats(history), rk = LabStore.getRank(st.streak);
+    document.getElementById('rk-title').textContent = rk.name;
+    document.getElementById('rk-sub').textContent = `Chuỗi ${st.streak} / ${rk.next} ngày · Tổng ${st.total} buổi`;
+
+    const hasNight = Object.values(history).some(r => r.start && new Date(r.start).getHours() >= 23);
+    const badges = [
+      { ico: '🌱', title: 'Khởi Hành', desc: 'Hoàn thành buổi học đầu tiên', ok: st.total >= 1 },
+      { ico: '🔥', title: 'Tuần Lễ Thép', desc: 'Đạt chuỗi 7 ngày liên tiếp', ok: st.bestStreak >= 7 },
+      { ico: '🦉', title: 'Cú Đêm Termux', desc: 'Mở phiên học sau 23:00 đêm', ok: hasNight },
+      { ico: '⚔️', title: 'Nửa Chặng Đường', desc: 'Hoàn thành 15 ngày trong lộ trình', ok: st.total >= 15 },
+      { ico: '👑', title: 'Bậc Thầy 30 Ngày', desc: 'Chinh phục trọn vẹn 30 ngày', ok: st.total >= 30 }
+    ];
+    const list = document.getElementById('b-list');
+    badges.forEach(b => {
+      list.insertAdjacentHTML('beforeend', `<div class="badge-item ${b.ok ? 'unlocked' : ''}"><span class="b-ico">${b.ico}</span><div><div class="b-title">${b.title} ${b.ok ? '✓' : '🔒'}</div><div class="b-desc">${b.desc}</div></div></div>`);
+    });
+  </script>
+</body>
+</html>

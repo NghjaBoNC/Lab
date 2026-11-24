@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ghi Chú Nhanh · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=1" />
+  <style>
+    .note-card { background: var(--card-bg); color: var(--text-dark); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .note-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: #6b21a8; font-weight: 700; }
+    .note-body { font-size: 0.84rem; white-space: pre-wrap; line-height: 1.4; }
+    .del-btn { background: none; border: none; color: var(--danger); font-weight: 800; cursor: pointer; font-size: 0.78rem; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Ghi Chú Nhanh</span>
+  </header>
+  <main class="wrap">
+    <section class="white-card" style="display:flex;flex-direction:column;gap:8px;">
+      <textarea id="n-in" class="input-box" rows="3" placeholder="Ghi nhanh lệnh Termux, lỗi gặp phải hoặc ý tưởng mới..."></textarea>
+      <button id="n-add" class="btn-pri" style="align-self:flex-end;">Lưu Ghi Chú</button>
+    </section>
+    <div id="n-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </main>
+  <script src="../core/roadmap.js?v=1"></script>
+  <script src="../core/store.js?v=1"></script>
+  <script>
+    const renderNotes = () => {
+      const s = LabStore.load(), wrap = document.getElementById('n-list');
+      wrap.innerHTML = s.notes.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.8rem;color:var(--text-sub);">Chưa có ghi chú nào</div>';
+      s.notes.forEach((n, idx) => {
+        wrap.insertAdjacentHTML('beforeend', `<div class="note-card"><div class="note-head"><span>${n.time}</span><button class="del-btn" data-i="${idx}">Xóa</button></div><div class="note-body"></div></div>`);
+        wrap.lastElementChild.querySelector('.note-body').textContent = n.text;
+      });
+      wrap.querySelectorAll('.del-btn').forEach(b => b.onclick = () => {
+        const cur = LabStore.load(); cur.notes.splice(Number(b.dataset.i), 1); LabStore.save(cur); renderNotes();
+      });
+    };
+    document.getElementById('n-add').onclick = () => {
+      const txt = document.getElementById('n-in').value.trim();
+      if (!txt) return;
+      const cur = LabStore.load();
+      const time = new Date().toLocaleString('vi-VN', { hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' });
+      cur.notes.unshift({ time, text: txt }); LabStore.save(cur);
+      document.getElementById('n-in').value = ''; renderNotes();
+    };
+    renderNotes();
+  </script>
+</body>
+</html>

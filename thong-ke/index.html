@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Thống Kê · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=1" />
+  <style>
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .s-box { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px; text-align: center; }
+    .s-box strong { display: block; font-size: 1.45rem; font-weight: 900; color: var(--gold); }
+    .s-box span { font-size: 0.74rem; color: var(--text-sub); font-weight: 700; }
+    .bars { display: grid; grid-template-columns: repeat(7,1fr); gap: 6px; align-items: end; height: 120px; padding-top: 16px; }
+    .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+    .bar-fill { width: 100%; background: linear-gradient(180deg, var(--emerald-light), var(--primary)); border-radius: 6px 6px 2px 2px; min-height: 4px; }
+    .bar-lbl { font-size: 0.68rem; font-weight: 700; color: #581c87; }
+    .bar-val { font-size: 0.62rem; font-weight: 800; color: #6b21a8; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Thống Kê Học Tập</span>
+  </header>
+  <main class="wrap">
+    <section class="stat-grid">
+      <div class="s-box"><strong id="k-streak">0</strong><span>Chuỗi hiện tại</span></div>
+      <div class="s-box"><strong id="k-best" style="color:var(--mint);">0</strong><span>Chuỗi cao nhất</span></div>
+      <div class="s-box"><strong id="k-total" style="color:#fff;">0</strong><span>Tổng buổi xong</span></div>
+      <div class="s-box"><strong id="k-mins" style="color:#fbbf24;">0p</strong><span>Tổng thời gian</span></div>
+    </section>
+    <section class="white-card">
+      <strong style="font-size:0.88rem;">Thời lượng học 7 ngày gần nhất (phút)</strong>
+      <div id="bars" class="bars"></div>
+    </section>
+  </main>
+  <script src="../core/roadmap.js?v=1"></script>
+  <script src="../core/store.js?v=1"></script>
+  <script>
+    const { history } = LabStore.load(), st = LabStore.calcStats(history);
+    document.getElementById('k-streak').textContent = st.streak;
+    document.getElementById('k-best').textContent = st.bestStreak;
+    document.getElementById('k-total').textContent = st.total;
+    document.getElementById('k-mins').textContent = st.totalMins >= 60 ? `${Math.floor(st.totalMins/60)}h ${st.totalMins%60}p` : `${st.totalMins}p`;
+
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const k = LabStore.toDateKey(d), r = history[k];
+      const mins = (r && r.start && r.end) ? Math.max(1, Math.round((new Date(r.end) - new Date(r.start)) / 60000)) : (r?.type === 'makeup' ? 10 : 0);
+      days.push({ lbl: `${d.getDate()}/${d.getMonth()+1}`, mins });
+    }
+    const maxM = Math.max(30, ...days.map(x => x.mins)), wrap = document.getElementById('bars');
+    days.forEach(x => {
+      const h = Math.round((x.mins / maxM) * 78);
+      wrap.insertAdjacentHTML('beforeend', `<div class="bar-col"><span class="bar-val">${x.mins || ''}</span><div class="bar-fill" style="height:${h}px"></div><span class="bar-lbl">${x.lbl}</span></div>`);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mục Tiêu · NghjaBoNC's Lab</title>
+  <link rel="stylesheet" href="../core/theme.css?v=1" />
+  <style>
+    .rm-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid #f3e8ff; font-size: 0.8rem; }
+    .rm-item:last-child { border-bottom: none; }
+    .rm-item.done { color: #059669; text-decoration: line-through; opacity: 0.8; }
+    .rm-item.next { font-weight: 800; color: #5b21b6; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn">‹ Lab</a>
+    <span class="page-title">Mục Tiêu & Lộ Trình</span>
+  </header>
+  <main class="wrap">
+    <section class="white-card" style="display:flex;flex-direction:column;gap:8px;">
+      <strong style="font-size:0.88rem;">Mục tiêu hôm nay</strong>
+      <div style="display:flex;gap:6px;">
+        <input id="t-in" class="input-box" maxlength="65" placeholder="Nhập mục tiêu hôm nay..." />
+        <button id="t-save" class="btn-pri">Lưu</button>
+      </div>
+    </section>
+    <section class="white-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <strong style="font-size:0.9rem;">Lộ trình 30 ngày</strong>
+        <span id="rm-prog" style="font-size:0.75rem;font-weight:800;color:var(--primary);">0/30</span>
+      </div>
+      <div id="rm-list" style="max-height:58dvh;overflow-y:auto;"></div>
+    </section>
+  </main>
+  <script src="../core/roadmap.js?v=1"></script>
+  <script src="../core/store.js?v=1"></script>
+  <script>
+    const s = LabStore.load(), today = LabStore.toDateKey(new Date()), st = LabStore.calcStats(s.history);
+    const tIn = document.getElementById('t-in');
+    tIn.value = s.targets[today]?.text || LabStore.getNextLesson(s.history, today);
+    document.getElementById('t-save').onclick = () => {
+      const cur = LabStore.load();
+      cur.targets[today] = { ...(cur.targets[today] || {}), text: tIn.value.trim() };
+      LabStore.save(cur); alert('Đã cập nhật mục tiêu hôm nay!');
+    };
+    document.getElementById('rm-prog').textContent = `${Math.min(30, st.total)}/30 ngày`;
+    const list = document.getElementById('rm-list');
+    ROADMAP_30.forEach((txt, i) => {
+      const cls = i < st.total ? 'rm-item done' : (i === st.total ? 'rm-item next' : 'rm-item');
+      const icon = i < st.total ? '✅' : (i === st.total ? '🔥' : '⬜');
+      list.insertAdjacentHTML('beforeend', `<div class="${cls}"><span>${icon}</span><span>${txt}</span></div>`);
+    });
+  </script>
+</body>
+</html>
