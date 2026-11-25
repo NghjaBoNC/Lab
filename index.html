@@ -138,7 +138,7 @@
     const rec = s.history[today];
 
     const h = new Date().getHours();
-    document.getElementById('greet').textContent = (h < 5 ? 'Khuya rồi' : h < 12 ? 'Chào buổi sáng' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối') + ', Nghĩa';
+    const uName = localStorage.getItem('lab_user_name') || 'Bạn'; const gEl = document.getElementById('greet'); gEl.textContent = (h < 5 ? 'Khuya rồi' : h < 12 ? 'Chào buổi sáng' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối') + ', ' + uName; gEl.style.cursor = 'pointer'; gEl.title = 'Chạm để đổi tên'; gEl.onclick = () => { const n = prompt('Nhập tên hiển thị của bạn:', uName); if (n && n.trim()) { localStorage.setItem('lab_user_name', n.trim()); location.reload(); } };
     const qList = [...(typeof QUOTES !== 'undefined' ? QUOTES : []), ...s.customQuotes];
     document.getElementById('lab-quote').textContent = qList[Math.floor(Math.random() * qList.length)] || '';
 
