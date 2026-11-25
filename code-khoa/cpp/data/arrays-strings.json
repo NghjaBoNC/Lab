@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "static-array",
+    "name": "Mảng tĩnh một chiều & nhiều chiều",
+    "kind": "Cấu trúc dữ liệu tích hợp",
+    "since": "C++98",
+    "def": "Tập hợp các phần tử cùng kiểu dữ liệu nằm liên tiếp nhau trên bộ nhớ, truy cập qua chỉ số bắt đầu từ 0.",
+    "syntax": "int a[5] = {10, 20, 30}; // Các phần tử còn lại tự bằng 0\nint mat[3][4];           // Mảng 2 chiều 3 hàng, 4 cột",
+    "use": "Lưu danh sách cố định, ma trận số học với tốc độ truy cập ngẫu nhiên O(1).",
+    "example": "#include <iostream>\nint main() {\n    int a[4] = {2, 4, 6, 8};\n    for (int i = 0; i < 4; ++i) std::cout << a[i] << ' ';\n}",
+    "note": "C++ không tự kiểm tra vượt biên mảng (truy cập a[10] trên mảng 4 phần tử gây Undefined Behavior). Khi truyền mảng 2 chiều vào hàm, bắt buộc phải ghi rõ kích thước số cột: void f(int m[][4], int rows).",
+    "related": ["pointer-array-decay", "c-string", "ternary-sizeof"]
+  },
+  {
+    "id": "c-string",
+    "name": "Chuỗi ký tự kiểu C (C-string & <cstring>)",
+    "kind": "Mảng ký tự kết thúc bằng '\\0'",
+    "since": "C++98",
+    "def": "Mảng một chiều kiểu char kết thúc bằng ký tự rỗng null terminator ('\\0', mã ASCII 0) để đánh dấu điểm kết thúc chuỗi.",
+    "syntax": "#include <cstring>\nchar s[50] = \"Ha Long\";\nsize_t n = std::strlen(s);",
+    "use": "Xử lý chuỗi ở mức thấp, tương thích với thư viện C và bài tập mảng ký tự cơ bản.",
+    "example": "#include <iostream>\n#include <cstring>\nint main() {\n    char a[30] = \"UHL \";\n    char b[] = \"CNTT\";\n    std::strcat(a, b); // Nối b vào sau a -> \"UHL CNTT\"\n    std::cout << a << \" (len=\" << std::strlen(a) << \")\\n\";\n}",
+    "note": "Mảng chứa chuỗi dài N ký tự phải khai báo kích thước tối thiểu N + 1 để chừa chỗ cho '\\0'. Không thể so sánh hai C-string bằng == (phải dùng std::strcmp(a, b) == 0) và không thể gán bằng = (phải dùng std::strcpy).",
+    "related": ["char-type", "getline-func", "std-string"]
+  },
+  {
+    "id": "std-string",
+    "name": "std::string (<string>)",
+    "kind": "Lớp thư viện chuẩn (<string>)",
+    "since": "C++98",
+    "def": "Lớp quản lý chuỗi ký tự động của thư viện chuẩn C++, tự động co giãn bộ nhớ và hỗ trợ nối chuỗi (+), so sánh (==, <) trực quan.",
+    "syntax": "#include <string>\nstd::string s = \"Hello\";\ns += \" C++\";\ns.length(); s.substr(0, 5); s.find(\"C++\");",
+    "use": "Xử lý văn bản an toàn, tiện lợi mà không lo tràn bộ đệm hay quản lý ký tự '\\0' thủ công.",
+    "example": "#include <iostream>\n#include <string>\nint main() {\n    std::string s = \"Lap trinh C++\";\n    if (s == \"Lap trinh C++\") {\n        std::cout << s.substr(10, 3) << '\\n'; // C++\n    }\n}",
+    "note": "Có thể chuyển đổi sang C-string chỉ đọc thông qua phương thức s.c_str() khi cần truyền vào các hàm C cũ.",
+    "related": ["c-string", "getline-func"]
+  }
+]

@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "cout-object",
+    "name": "std::cout & Toán tử <<",
+    "kind": "Đối tượng thư viện chuẩn (<iostream>)",
+    "since": "C++98",
+    "def": "Luồng xuất chuẩn (Standard Output Stream, kiểu std::ostream) gắn với màn hình console, dùng toán tử chèn << để đẩy dữ liệu ra.",
+    "syntax": "#include <iostream>\nstd::cout << \"Gia tri: \" << x << '\\n';",
+    "use": "In kết quả, chuỗi, biến ra màn hình và hỗ trợ nối chuỗi nhiều toán tử << liên tiếp.",
+    "example": "#include <iostream>\nint main() {\n    int n = 2026;\n    std::cout << \"Nam: \" << n << '\\n';\n    return 0;\n}",
+    "note": "Dùng '\\n' nhanh hơn std::endl vì std::endl vừa xuống dòng vừa ép xả bộ đệm (flush buffer) mỗi lần gọi, gây chậm khi in nhiều dòng.",
+    "related": ["cin-object", "iomanip-manipulators"]
+  },
+  {
+    "id": "cin-object",
+    "name": "std::cin & Toán tử >>",
+    "kind": "Đối tượng thư viện chuẩn (<iostream>)",
+    "since": "C++98",
+    "def": "Luồng nhập chuẩn (Standard Input Stream, kiểu std::istream) đọc dữ liệu từ bàn phím và dừng lại khi gặp khoảng trắng (space, tab, enter).",
+    "syntax": "#include <iostream>\nint a, b;\nstd::cin >> a >> b;",
+    "use": "Đọc số nguyên, số thực, ký tự hoặc từ đơn (không dấu cách) từ đầu vào chuẩn.",
+    "example": "#include <iostream>\nint main() {\n    int x;\n    if (std::cin >> x) {\n        std::cout << \"Da nhap: \" << x << '\\n';\n    }\n}",
+    "note": "Toán tử >> để lại ký tự xuống dòng '\\n' trong bộ đệm bàn phím; nếu ngay sau cin >> gọi std::getline() thì phải xóa bộ đệm bằng std::cin.ignore() trước.",
+    "related": ["cout-object", "getline-func"]
+  },
+  {
+    "id": "getline-func",
+    "name": "std::getline & cin.getline",
+    "kind": "Hàm thư viện chuẩn (<string> / <istream>)",
+    "since": "C++98",
+    "def": "Đọc trọn vẹn một dòng văn bản (bao gồm cả dấu cách) từ luồng nhập cho đến khi gặp ký tự xuống dòng '\\n'.",
+    "syntax": "std::getline(std::cin, str);        // Cho std::string\nstd::cin.getline(cstr, MAX_LEN);   // Cho mảng char[] (C-string)",
+    "use": "Nhập họ tên, câu văn hoặc chuỗi có chứa khoảng trắng.",
+    "example": "#include <iostream>\n#include <string>\nint main() {\n    int age;\n    std::string name;\n    std::cin >> age;\n    std::cin.ignore(); // Xóa dấu '\\n' còn sót\n    std::getline(std::cin, name);\n    std::cout << name << \" - \" << age << '\\n';\n}",
+    "note": "Với mảng ký tự char s[100], cin.getline(s, 100) đọc tối đa 99 ký tự và tự chèn '\\0' vào cuối.",
+    "related": ["cin-object", "c-string", "std-string"]
+  },
+  {
+    "id": "cerr-clog",
+    "name": "std::cerr & std::clog",
+    "kind": "Đối tượng thư viện chuẩn (<iostream>)",
+    "since": "C++98",
+    "def": "Hai luồng xuất lỗi chuẩn: std::cerr xuất thẳng ngay lập tức (unbuffered), còn std::clog có qua bộ đệm (buffered).",
+    "syntax": "std::cerr << \"Loi: Khong mo duoc file!\\n\";\nstd::clog << \"Log: Dang xu ly buoc 1...\\n\";",
+    "use": "Tách biệt thông báo lỗi/debug khỏi dữ liệu đầu ra chính của std::cout.",
+    "example": "#include <iostream>\nint main() {\n    int b = 0;\n    if (b == 0) std::cerr << \"Loi chia cho 0\\n\";\n}",
+    "note": "Vì std::cerr không qua bộ đệm, thông báo lỗi luôn hiện ra ngay cả khi chương trình bị crash ngay dòng sau đó.",
+    "related": ["cout-object"]
+  },
+  {
+    "id": "iomanip-manipulators",
+    "name": "Định dạng xuất (<iomanip>: setprecision, fixed, setw)",
+    "kind": "Thư viện chuẩn (<iomanip>)",
+    "since": "C++98",
+    "def": "Tập hợp các bộ điều khiển định dạng hiển thị số thực (số chữ số sau dấu phẩy), căn lề cột và ký tự lấp đầy.",
+    "syntax": "#include <iomanip>\nstd::cout << std::fixed << std::setprecision(2) << val;",
+    "use": "In điểm số, tiền tệ, ma trận hoặc bảng biểu thẳng hàng.",
+    "example": "#include <iostream>\n#include <iomanip>\nint main() {\n    double pi = 3.1415926;\n    std::cout << std::fixed << std::setprecision(3) << pi << '\\n'; // 3.142\n}",
+    "note": "std::fixed và std::setprecision có hiệu lực lâu dài cho tất cả các lệnh cout phía sau, còn std::setw(n) chỉ có tác dụng cho đúng một giá trị ngay sau nó.",
+    "related": ["cout-object", "double-type"]
+  }
+]

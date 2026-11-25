@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "if-else-stmt",
+    "name": "if / else if / else",
+    "kind": "Từ khóa · Cấu trúc rẽ nhánh",
+    "since": "C++98 (Init-statement từ C++17)",
+    "def": "Kiểm tra biểu thức điều kiện boolean và thực thi khối lệnh tương ứng khi điều kiện đúng (khác 0).",
+    "syntax": "if (dieu_kien_1) {\n    // ...\n} else if (dieu_kien_2) {\n    // ...\n} else {\n    // ...\n}",
+    "use": "Phân luồng xử lý logic theo các điều kiện rời rạc hoặc khoảng giá trị.",
+    "example": "#include <iostream>\nint main() {\n    int score = 8;\n    if (score >= 8) std::cout << \"Gioi\\n\";\n    else if (score >= 5) std::cout << \"Dat\\n\";\n    else std::cout << \"Hoc lai\\n\";\n}",
+    "note": "Lỗi kinh điển: viết nhầm phép gán = thành phép so sánh == bên trong if (ví dụ if (x = 0) luôn sai và gán x thành 0).",
+    "related": ["switch-case-stmt", "bool-type"]
+  },
+  {
+    "id": "switch-case-stmt",
+    "name": "switch / case / default",
+    "kind": "Từ khóa · Rẽ nhánh đa trường hợp",
+    "since": "C++98",
+    "def": "Nhảy trực tiếp tới nhánh khớp với giá trị hằng số nguyên (int, char, enum) của biểu thức kiểm tra.",
+    "syntax": "switch (bien_nguyen) {\n    case 1: /* ... */ break;\n    case 2: /* ... */ break;\n    default: /* ... */ break;\n}",
+    "use": "Xử lý menu lựa chọn hoặc phân loại nhiều giá trị hằng rời rạc gọn hơn chuỗi if-else dài.",
+    "example": "#include <iostream>\nint main() {\n    char op = '+';\n    switch (op) {\n        case '+': std::cout << \"Cong\\n\"; break;\n        case '-': std::cout << \"Tru\\n\"; break;\n        default:  std::cout << \"Khac\\n\";\n    }\n}",
+    "note": "Nếu thiếu lệnh break; ở cuối một case, chương trình sẽ chạy trôi tuột xuống thực thi cả các case bên dưới (hiện tượng fall-through). Không dùng switch cho float, double hay std::string.",
+    "related": ["if-else-stmt", "break-continue"]
+  },
+  {
+    "id": "break-continue",
+    "name": "break & continue",
+    "kind": "Từ khóa · Điều khiển nhảy vòng lặp",
+    "since": "C++98",
+    "def": "break thoát ngay lập tức khỏi vòng lặp (hoặc switch) gần nhất; continue bỏ qua phần còn lại của lượt lặp hiện tại để sang vòng lặp kế tiếp.",
+    "syntax": "if (found) break;\nif (x % 2 == 0) continue;",
+    "use": "Dừng tìm kiếm ngay khi thấy kết quả hoặc lọc bỏ các phần tử không thỏa điều kiện trong vòng lặp.",
+    "example": "#include <iostream>\nint main() {\n    for (int i = 1; i <= 5; ++i) {\n        if (i == 3) continue; // Bỏ qua số 3\n        if (i == 5) break;    // Dừng hẳn ở 5\n        std::cout << i << ' '; // In: 1 2 4\n    }\n}",
+    "note": "Trong các vòng lặp lồng nhau, break và continue chỉ tác động lên vòng lặp trong cùng chứa nó.",
+    "related": ["for-loop", "while-loop", "switch-case-stmt"]
+  },
+  {
+    "id": "goto-stmt",
+    "name": "goto & Nhãn (Label)",
+    "kind": "Từ khóa · Nhảy vô điều kiện",
+    "since": "C++98",
+    "def": "Chuyển quyền điều khiển nhảy thẳng tới một nhãn đặt sẵn trong cùng một hàm.",
+    "syntax": "goto ten_nhan;\n// ...\nten_nhan:\n    // Lệnh tiếp theo",
+    "use": "Thoát nhanh đồng thời ra khỏi nhiều tầng vòng lặp lồng nhau sâu khi gặp lỗi.",
+    "example": "#include <iostream>\nint main() {\n    for (int i = 0; i < 3; ++i)\n        for (int j = 0; j < 3; ++j)\n            if (i + j == 3) goto end_loop;\nend_loop:\n    std::cout << \"Da thoat vong lap long\\n\";\n}",
+    "note": "Hạn chế lạm dụng goto vì dễ làm rối luồng đọc code (spaghetti code); không được dùng goto nhảy qua dòng khai báo biến cục bộ có khởi tạo.",
+    "related": ["break-continue"]
+  }
+]

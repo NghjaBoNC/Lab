@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "pointer-basics",
+    "name": "Con trỏ (Pointer), Toán tử & và *",
+    "kind": "Kiểu dữ liệu dẫn xuất",
+    "since": "C++98",
+    "def": "Biến đặc biệt dùng để lưu trữ địa chỉ ô nhớ của một biến khác. Toán tử & lấy địa chỉ biến; toán tử * giải tham chiếu (truy cập giá trị tại địa chỉ đó).",
+    "syntax": "int x = 10;\nint* p = &x;  // p lưu địa chỉ của x\n*p = 25;      // Sửa giá trị của x thành 25",
+    "use": "Thao tác trực tiếp với bộ nhớ, truyền mảng vào hàm, cấp phát động và xây dựng cấu trúc dữ liệu liên kết.",
+    "example": "#include <iostream>\nint main() {\n    int a = 42;\n    int* ptr = &a;\n    std::cout << \"Dia chi: \" << ptr << \", Gia tri: \" << *ptr << '\\n';\n}",
+    "note": "Trong C++03 dùng NULL hoặc 0 cho con trỏ rỗng; từ C++11 dùng nullptr. Tuyệt đối không giải tham chiếu (*ptr) khi con trỏ chưa được gán địa chỉ hợp lệ (Wild Pointer).",
+    "related": ["pointer-arithmetic", "reference-var", "nullptr-keyword"]
+  },
+  {
+    "id": "reference-var",
+    "name": "Biến tham chiếu (Reference &)",
+    "kind": "Kiểu dữ liệu dẫn xuất",
+    "since": "C++98",
+    "def": "Tạo ra một tên gọi khác (bí danh - alias) cùng trỏ chung tới một vùng nhớ với biến đã có sẵn.",
+    "syntax": "int original = 100;\nint& ref = original; // ref và original là một",
+    "use": "Truyền tham số vào hàm an toàn hơn con trỏ vì không bao giờ bị rỗng (null) và không cần dùng dấu *.",
+    "example": "#include <iostream>\nint main() {\n    int x = 10;\n    int& r = x;\n    r += 5;\n    std::cout << x << '\\n'; // 15\n}",
+    "note": "Biến tham chiếu bắt buộc phải được khởi tạo ngay lúc khai báo và không thể đổi sang tham chiếu biến khác sau đó.",
+    "related": ["pointer-basics", "pass-by-val-ref"]
+  },
+  {
+    "id": "pointer-arithmetic",
+    "name": "Số học con trỏ & Mối liên hệ với Mảng",
+    "kind": "Cơ chế bộ nhớ",
+    "since": "C++98",
+    "def": "Khi cộng/trừ con trỏ p với số nguyên k, địa chỉ nhảy đi đúng k × sizeof(kiểu_dữ_liệu) byte. Tên mảng tĩnh tự suy biến thành con trỏ trỏ tới phần tử đầu tiên (&a[0]).",
+    "syntax": "int* p = arr;\n*(p + i)  // Tương đương hoàn toàn với arr[i]\np++;      // Nhảy sang phần tử kế tiếp",
+    "use": "Duyệt mảng nhanh bằng con trỏ và hiểu bản chất cách truyền mảng vào hàm.",
+    "example": "#include <iostream>\nint main() {\n    int a[3] = {10, 20, 30};\n    int* p = a;\n    for (int i = 0; i < 3; ++i) {\n        std::cout << *(p + i) << ' '; // 10 20 30\n    }\n}",
+    "note": "Không được thực hiện phép cộng giữa hai con trỏ (p1 + p2 vô nghĩa), chỉ được phép lấy hiệu hai con trỏ cùng trỏ trong một mảng (p2 - p1 trả về số phần tử ở giữa).",
+    "related": ["pointer-basics", "static-array"]
+  },
+  {
+    "id": "dynamic-allocation-basic",
+    "name": "Cấp phát động cơ bản (new & delete)",
+    "kind": "Từ khóa · Quản lý bộ nhớ Heap",
+    "since": "C++98",
+    "def": "Toán tử new xin cấp phát vùng nhớ động trên Heap tại thời điểm chạy và trả về con trỏ; delete giải phóng vùng nhớ đó trả lại hệ điều hành.",
+    "syntax": "int* p = new int(5);\ndelete p;\n\nint* arr = new int[n];\ndelete[] arr;",
+    "use": "Tạo mảng có kích thước n nhập từ bàn phím lúc chạy chương trình.",
+    "example": "#include <iostream>\nint main() {\n    int n = 3;\n    int* a = new int[n];\n    for (int i = 0; i < n; ++i) a[i] = (i + 1) * 10;\n    std::cout << a[2] << '\\n'; // 30\n    delete[] a;\n    a = NULL;\n}",
+    "note": "Dùng new[] thì bắt buộc giải phóng bằng delete[] (có cặp ngoặc vuông). Quên delete gây rò rỉ bộ nhớ (Memory Leak); giải phóng 2 lần gây lỗi sập chương trình.",
+    "related": ["pointer-basics", "pointer-arithmetic"]
+  }
+]

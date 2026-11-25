@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "for-loop",
+    "name": "Vòng lặp for",
+    "kind": "Từ khóa · Cấu trúc lặp xác định",
+    "since": "C++98",
+    "def": "Vòng lặp gồm 3 mệnh đề trên cùng một dòng: khởi tạo biến đếm, điều kiện tiếp tục lặp và bước cập nhật sau mỗi lượt.",
+    "syntax": "for (khoi_tao; dieu_kien; cap_nhat) {\n    // Thân vòng lặp\n}",
+    "use": "Duyệt mảng theo chỉ số, lặp với số lần biết trước hoặc bước nhảy cố định.",
+    "example": "#include <iostream>\nint main() {\n    int sum = 0;\n    for (int i = 1; i <= 10; ++i) sum += i;\n    std::cout << sum << '\\n'; // 55\n}",
+    "note": "Biến i khai báo trong for (int i = 0; ...) chỉ tồn tại bên trong phạm vi vòng lặp đó (chuẩn C++98/03 trở đi).",
+    "related": ["while-loop", "range-for-loop", "break-continue"]
+  },
+  {
+    "id": "while-loop",
+    "name": "Vòng lặp while",
+    "kind": "Từ khóa · Cấu trúc lặp kiểm tra trước",
+    "since": "C++98",
+    "def": "Kiểm tra điều kiện trước; nếu đúng mới thực thi thân vòng lặp và lặp lại cho đến khi điều kiện sai.",
+    "syntax": "while (dieu_kien) {\n    // Thân vòng lặp\n}",
+    "use": "Lặp khi chưa biết trước số lần lặp (ví dụ: tách từng chữ số của số nguyên, đọc dữ liệu đến hết file).",
+    "example": "#include <iostream>\nint main() {\n    int n = 1234, digits = 0;\n    while (n > 0) { digits++; n /= 10; }\n    std::cout << digits << '\\n'; // 4\n}",
+    "note": "Nếu điều kiện sai ngay từ đầu, thân vòng lặp while sẽ không chạy lần nào (0 lượt).",
+    "related": ["do-while-loop", "for-loop"]
+  },
+  {
+    "id": "do-while-loop",
+    "name": "Vòng lặp do-while",
+    "kind": "Từ khóa · Cấu trúc lặp kiểm tra sau",
+    "since": "C++98",
+    "def": "Thực thi thân vòng lặp trước một lần, sau đó mới kiểm tra điều kiện để quyết định có lặp tiếp hay không.",
+    "syntax": "do {\n    // Thân vòng lặp\n} while (dieu_kien);",
+    "use": "Kiểm tra nhập liệu hợp lệ (bắt nhập lại nếu nhập sai) hoặc hiển thị menu ít nhất 1 lần.",
+    "example": "#include <iostream>\nint main() {\n    int n;\n    do {\n        std::cin >> n;\n    } while (n <= 0); // Ép nhập số dương\n}",
+    "note": "Đừng quên dấu chấm phẩy ; ở ngay sau ngoặc đóng của while(dieu_kien);.",
+    "related": ["while-loop", "for-loop"]
+  },
+  {
+    "id": "range-for-loop",
+    "name": "Range-based for (for-each)",
+    "kind": "Cú pháp lặp hiện đại",
+    "since": "C++11",
+    "def": "Duyệt tuần tự qua mọi phần tử của mảng tĩnh hoặc container (std::vector, std::string...) mà không cần biến chỉ số.",
+    "syntax": "for (auto& x : container) {\n    // Thao tác trực tiếp trên x\n}",
+    "use": "Viết vòng lặp duyệt mảng/chuỗi ngắn gọn và tránh tuyệt đối lỗi tràn chỉ số mảng.",
+    "example": "#include <iostream>\nint main() {\n    int a[4] = {10, 20, 30, 40};\n    for (int x : a) std::cout << x << ' ';\n}",
+    "note": "Tính năng này chỉ có từ C++11 trở lên (trong C++03 phải dùng vòng lặp for truyền thống với biến chỉ số i).",
+    "related": ["for-loop", "auto-keyword"]
+  }
+]

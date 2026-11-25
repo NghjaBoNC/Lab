@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "function-basics",
+    "name": "Khai báo, Định nghĩa & Nguyên mẫu hàm (Prototype)",
+    "kind": "Cú pháp cốt lõi",
+    "since": "C++98",
+    "def": "Đóng gói một khối lệnh thực hiện nhiệm vụ cụ thể; nguyên mẫu hàm (function prototype) khai báo tên và kiểu tham số trước main() để trình biên dịch nhận diện.",
+    "syntax": "kieu_tra_ve ten_ham(kieu1 tham_so1, kieu2 tham_so2); // Prototype\n\nkieu_tra_ve ten_ham(kieu1 tham_so1, kieu2 tham_so2) {\n    return gia_tri;\n}",
+    "use": "Chia nhỏ chương trình thành các module dễ bảo trì và tái sử dụng.",
+    "example": "#include <iostream>\nint add(int a, int b); // Khai báo nguyên mẫu\n\nint main() { std::cout << add(3, 4) << '\\n'; }\n\nint add(int a, int b) { return a + b; }",
+    "note": "Trong C++, hàm không thể định nghĩa lồng bên trong một hàm khác (trừ lambda từ C++11).",
+    "related": ["pass-by-val-ref", "function-overloading"]
+  },
+  {
+    "id": "pass-by-val-ref",
+    "name": "Truyền tham trị (Pass by Value) & Tham chiếu (Pass by Reference)",
+    "kind": "Cơ chế truyền tham số",
+    "since": "C++98",
+    "def": "Tham trị sao chép giá trị đối số sang biến mới; tham chiếu (&) truyền trực tiếp bí danh của biến gốc vào hàm.",
+    "syntax": "void byVal(int x);          // Không đổi biến gốc\nvoid byRef(int& x);         // Thay đổi trực tiếp biến gốc\nvoid byConstRef(const int& x); // Đọc nhanh, không cho sửa",
+    "use": "Dùng tham chiếu (&) khi hàm cần trả về nhiều kết quả hoặc tránh sao chép dữ liệu lớn.",
+    "example": "#include <iostream>\nvoid swapVal(int& a, int& b) {\n    int tmp = a; a = b; b = tmp;\n}\nint main() {\n    int x = 5, y = 9;\n    swapVal(x, y);\n    std::cout << x << ' ' << y << '\\n'; // 9 5\n}",
+    "note": "Không thể truyền hằng số (như swapVal(5, 9)) vào tham số tham chiếu không hằng (int&).",
+    "related": ["reference-var", "function-basics"]
+  },
+  {
+    "id": "function-overloading",
+    "name": "Nạp chồng hàm (Function Overloading) & Tham số mặc định",
+    "kind": "Tính năng ngôn ngữ",
+    "since": "C++98",
+    "def": "Cho phép định nghĩa nhiều hàm trùng tên nhưng khác nhau về số lượng hoặc kiểu dữ liệu tham số; tham số mặc định gán sẵn giá trị nếu người gọi bỏ qua.",
+    "syntax": "int maxVal(int a, int b);\ndouble maxVal(double a, double b);\nvoid logMsg(const char* s, int level = 1);",
+    "use": "Tạo giao diện hàm thống nhất cho nhiều kiểu dữ liệu khác nhau.",
+    "example": "#include <iostream>\nint area(int a) { return a * a; }\nint area(int a, int b) { return a * b; }\nint main() {\n    std::cout << area(5) << ' ' << area(4, 6) << '\\n'; // 25 24\n}",
+    "note": "Không thể nạp chồng hai hàm chỉ khác nhau ở kiểu trả về (ví dụ int f() và double f() sẽ báo lỗi). Tham số mặc định phải đặt từ phải sang trái.",
+    "related": ["function-basics"]
+  },
+  {
+    "id": "recursion-inline",
+    "name": "Đệ quy (Recursion) & Từ khóa inline",
+    "kind": "Kỹ thuật & Từ khóa",
+    "since": "C++98",
+    "def": "Đệ quy là kỹ thuật hàm tự gọi lại chính nó với bài toán nhỏ hơn kèm điều kiện dừng; inline gợi ý trình biên dịch chèn thẳng mã hàm tại nơi gọi.",
+    "syntax": "inline int sqr(int x) { return x * x; }\nint fact(int n) { return (n <= 1) ? 1 : n * fact(n - 1); }",
+    "use": "Giải các bài toán phân rã tự nhiên (giai thừa, Fibonacci, duyệt cây) và tối ưu các hàm cực ngắn gọi nhiều lần.",
+    "example": "#include <iostream>\nint gcd(int a, int b) {\n    return (b == 0) ? a : gcd(b, a % b);\n}\nint main() { std::cout << gcd(48, 18) << '\\n'; } // 6",
+    "note": "Hàm đệ quy thiếu điều kiện dừng (base case) sẽ làm tràn bộ nhớ ngăn xếp (Stack Overflow).",
+    "related": ["function-basics"]
+  },
+  {
+    "id": "lambda-expr",
+    "name": "Biểu thức Lambda (Hàm ẩn danh)",
+    "kind": "Cú pháp hàm hiện đại",
+    "since": "C++11 (Generic lambda từ C++14)",
+    "def": "Định nghĩa một hàm vô danh ngắn gọn ngay tại chỗ cần sử dụng, có khả năng bắt giữ (capture) các biến ở phạm vi bao quanh.",
+    "syntax": "[capture](params) -> return_type { body }",
+    "use": "Truyền hàm so sánh tùy chỉnh cho std::sort hoặc xử lý callback ngắn gọn.",
+    "example": "#include <iostream>\nint main() {\n    int k = 10;\n    auto addK = [k](int x) { return x + k; };\n    std::cout << addK(5) << '\\n'; // 15\n}",
+    "note": "Chỉ hỗ trợ từ C++11 trở lên; trong C++03 phải viết hàm thông thường hoặc struct nạp chồng toán tử ().",
+    "related": ["function-basics", "auto-keyword"]
+  }
+]
