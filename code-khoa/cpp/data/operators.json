@@ -1,0 +1,50 @@
+[
+  {
+    "id": "arithmetic-operators",
+    "name": "Toán tử số học (+, -, *, /, %, ++, --)",
+    "kind": "Toán tử",
+    "since": "C++98",
+    "def": "Thực hiện các phép toán đại số cơ bản và tăng/giảm 1 đơn vị trên kiểu số.",
+    "syntax": "a + b, a - b, a * b, a / b, a % b\n++i (tiền tố), i++ (hậu tố)",
+    "use": "Tính toán biểu thức toán học, chia lấy dư (%), cập nhật biến đếm vòng lặp.",
+    "example": "#include <iostream>\nint main() {\n    int a = 7, b = 2;\n    std::cout << a / b << ' ' << (double)a / b << ' ' << a % b << '\\n'; // 3 3.5 1\n}",
+    "note": "Chia hai số nguyên (7 / 2) luôn cắt phần thập phân cho kết quả nguyên (3). Toán tử % chỉ dùng cho số nguyên; ++i nhanh hơn i++ với các kiểu phức tạp như iterator vì không tạo bản sao tạm.",
+    "related": ["int-type", "double-type"]
+  },
+  {
+    "id": "logical-operators",
+    "name": "Toán tử logic (&&, ||, !)",
+    "kind": "Toán tử",
+    "since": "C++98",
+    "def": "Kết hợp hoặc phủ định các biểu thức điều kiện boolean: VÀ (&&), HOẶC (||), PHỦ ĐỊNH (!).",
+    "syntax": "cond1 && cond2\ncond1 || cond2\n!cond",
+    "use": "Xây dựng điều kiện rẽ nhánh phức hợp trong if, while.",
+    "example": "#include <iostream>\nint main() {\n    int* ptr = nullptr;\n    // An toàn nhờ Short-circuit: ptr != nullptr sai nên vế sau không chạy\n    if (ptr != nullptr && *ptr == 10) {\n        std::cout << \"OK\\n\";\n    }\n}",
+    "note": "C++ áp dụng cơ chế đoản mạch (Short-circuit evaluation): với A && B, nếu A sai thì B không được thực thi; với A || B, nếu A đúng thì B bỏ qua.",
+    "related": ["bool-type", "bitwise-operators"]
+  },
+  {
+    "id": "bitwise-operators",
+    "name": "Toán tử thao tác bit (&, |, ^, ~, <<, >>)",
+    "kind": "Toán tử",
+    "since": "C++98",
+    "def": "Thao tác trực tiếp trên từng bit nhị phân của số nguyên: AND (&), OR (|), XOR (^), NOT (~), dịch trái (<<), dịch phải (>>).",
+    "syntax": "x & 1      // Kiểm tra bit cuối (lẻ/chẵn)\n1 << k     // Tính 2^k\nx ^ x      // Luôn bằng 0",
+    "use": "Tối ưu tốc độ thuật toán, quản lý cờ quyền (bitmask), mật mã học và lập trình nhúng/hệ thống.",
+    "example": "#include <iostream>\nint main() {\n    int n = 6; // 110 trong nhị phân\n    std::cout << (n << 1) << ' ' << (n >> 1) << '\\n'; // 12 và 3\n}",
+    "note": "Phân biệt rõ & (bitwise AND) với && (logical AND). Chỉ nên dịch bit trên số nguyên không dấu (unsigned) để tránh lỗi dịch bit dấu.",
+    "related": ["logical-operators", "int-type"]
+  },
+  {
+    "id": "ternary-sizeof",
+    "name": "Toán tử ba ngôi (?:) và sizeof",
+    "kind": "Toán tử",
+    "since": "C++98",
+    "def": "Toán tử điều kiện rút gọn (điều_kiện ? giá_trị_đúng : giá_trị_sai) và toán tử sizeof trả về kích thước (tính bằng byte) tại thời điểm biên dịch.",
+    "syntax": "int maxVal = (a > b) ? a : b;\nsize_t bytes = sizeof(double);",
+    "use": "Viết gọn biểu thức gán có điều kiện và đo kích thước kiểu dữ liệu hoặc mảng tĩnh.",
+    "example": "#include <iostream>\nint main() {\n    int arr[5] = {1, 2, 3, 4, 5};\n    size_t len = sizeof(arr) / sizeof(arr[0]);\n    std::cout << \"So phan tu: \" << len << '\\n';\n}",
+    "note": "sizeof(arr) chỉ trả về tổng byte của mảng khi arr là mảng tĩnh trong cùng phạm vi; nếu truyền mảng vào hàm, arr suy biến thành con trỏ nên sizeof trả về kích thước con trỏ (4 hoặc 8 byte).",
+    "related": ["int-type", "arithmetic-operators"]
+  }
+]

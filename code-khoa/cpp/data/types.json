@@ -1,0 +1,86 @@
+[
+  {
+    "id": "int-type",
+    "name": "int (và các biến thể số nguyên)",
+    "kind": "Từ khóa · Kiểu dữ liệu cơ bản",
+    "since": "C++98 (long long từ C++11)",
+    "def": "Kiểu dữ liệu lưu trữ số nguyên có dấu hoặc không dấu (unsigned) với kích thước phụ thuộc kiến trúc nhưng tối thiểu theo chuẩn.",
+    "syntax": "int a = 10;\nunsigned int b = 20;\nlong long c = 1000000000000LL;",
+    "use": "Lưu số đếm, chỉ số mảng, tính toán số nguyên chính xác.",
+    "example": "#include <iostream>\n#include <cstdint>\nint main() {\n    int x = -42;\n    int64_t big = 9000000000000000000LL;\n    std::cout << sizeof(int) << ' ' << big << '\\n';\n}",
+    "note": "int thường chiếm 4 byte (-2.14×10^9 đến 2.14×10^9). Tràn số nguyên có dấu (signed overflow) là Undefined Behavior; nên dùng <cstdint> (int32_t, int64_t) khi cần kích thước cố định.",
+    "related": ["sizeof-operator", "double-type", "auto-keyword"]
+  },
+  {
+    "id": "double-type",
+    "name": "float & double",
+    "kind": "Từ khóa · Kiểu dữ liệu dấu phẩy động",
+    "since": "C++98",
+    "def": "Kiểu dữ liệu biểu diễn số thực theo chuẩn IEEE 754: float (độ chính xác đơn, 4 byte) và double (độ chính xác kép, 8 byte).",
+    "syntax": "float f = 3.14f;\ndouble d = 3.14159265358979;",
+    "use": "Tính toán số thực, hình học, vật lý, thống kê.",
+    "example": "#include <iostream>\n#include <cmath>\nint main() {\n    double a = 0.1 + 0.2;\n    // Không so sánh trực tiếp a == 0.3\n    bool eq = std::abs(a - 0.3) < 1e-9;\n    std::cout << eq << '\\n';\n}",
+    "note": "float chỉ chính xác ~6–7 chữ số thập phân, double chính xác ~15–17 chữ số. Tuyệt đối tránh dùng == để so sánh hai số thực do sai số làm tròn nhị phân.",
+    "related": ["int-type", "relational-operators"]
+  },
+  {
+    "id": "char-type",
+    "name": "char",
+    "kind": "Từ khóa · Kiểu ký tự",
+    "since": "C++98",
+    "def": "Kiểu dữ liệu nguyên kích thước đúng 1 byte (8 bit), dùng để lưu mã ký tự ASCII hoặc dữ liệu byte thô.",
+    "syntax": "char c = 'A';\nunsigned char byte = 255;",
+    "use": "Xử lý ký tự đơn lẻ, chuỗi C-string kết thúc bằng '\\0', hoặc đọc/ghi bộ nhớ mức byte.",
+    "example": "#include <iostream>\nint main() {\n    char ch = 'a';\n    char upper = ch - 32; // 'A' (mã ASCII 65)\n    std::cout << upper << \" (\" << int(upper) << \")\\n\";\n}",
+    "note": "Ký tự đơn đặt trong nháy đơn 'A', khác với chuỗi ký tự đặt trong nháy kép \"A\" (gồm 2 byte: 'A' và '\\0').",
+    "related": ["bool-type", "int-type"]
+  },
+  {
+    "id": "bool-type",
+    "name": "bool",
+    "kind": "Từ khóa · Kiểu logic",
+    "since": "C++98",
+    "def": "Kiểu dữ liệu logic chỉ nhận một trong hai giá trị từ khóa: true (1) hoặc false (0).",
+    "syntax": "bool isReady = true;\nbool isEmpty = (count == 0);",
+    "use": "Lưu cờ trạng thái, điều kiện rẽ nhánh và vòng lặp.",
+    "example": "#include <iostream>\nint main() {\n    bool ok = 5 > 3;\n    std::cout << std::boolalpha << ok << '\\n'; // In ra true\n}",
+    "note": "Khi ép kiểu từ số sang bool: mọi giá trị khác 0 đều thành true, chỉ duy nhất 0 (hoặc nullptr) thành false.",
+    "related": ["logical-operators", "nullptr-keyword"]
+  },
+  {
+    "id": "void-type",
+    "name": "void",
+    "kind": "Từ khóa · Kiểu rỗng",
+    "since": "C++98",
+    "def": "Kiểu dữ liệu không hoàn chỉnh biểu thị sự vắng mặt của giá trị.",
+    "syntax": "void logMessage();\nvoid* rawPtr = nullptr;",
+    "use": "Khai báo hàm không trả về giá trị, hoặc khai báo con trỏ tổng quát void* trỏ tới vùng nhớ bất kỳ kiểu nào.",
+    "example": "#include <iostream>\nvoid greet() {\n    std::cout << \"Xin chao!\\n\";\n}\nint main() { greet(); }",
+    "note": "Không thể khai báo biến có kiểu void (ví dụ: void x; sẽ báo lỗi biên dịch) và không thể giải tham chiếu trực tiếp *rawPtr nếu chưa ép kiểu.",
+    "related": ["nullptr-keyword"]
+  },
+  {
+    "id": "auto-keyword",
+    "name": "auto",
+    "kind": "Từ khóa · Suy diễn kiểu tự động",
+    "since": "C++11 (mở rộng ở C++14/20)",
+    "def": "Yêu cầu trình biên dịch tự động suy luận kiểu dữ liệu của biến dựa trên biểu thức khởi tạo tại thời điểm biên dịch.",
+    "syntax": "auto x = 10;          // int\nauto y = 3.14;        // double\nconst auto& ref = x;  // const int&",
+    "use": "Rút gọn khai báo các kiểu dài dòng (như iterator của STL) và tránh lỗi ép kiểu ngầm định.",
+    "example": "#include <vector>\n#include <iostream>\nint main() {\n    std::vector<int> v = {1, 2, 3};\n    for (const auto& item : v) std::cout << item << ' ';\n}",
+    "note": "Biến dùng auto bắt buộc phải được khởi tạo ngay lúc khai báo. Mặc định auto loại bỏ const và tham chiếu (&), nên cần viết const auto& nếu muốn tránh copy.",
+    "related": ["const-keyword", "int-type"]
+  },
+  {
+    "id": "nullptr-keyword",
+    "name": "nullptr & std::nullptr_t",
+    "kind": "Từ khóa · Hằng con trỏ rỗng",
+    "since": "C++11",
+    "def": "Từ khóa biểu diễn hằng con trỏ rỗng an toàn về mặt kiểu (kiểu std::nullptr_t), thay thế hoàn toàn macro NULL cũ của C.",
+    "syntax": "int* ptr = nullptr;\nif (ptr == nullptr) { /* Con trỏ chưa trỏ tới đâu */ }",
+    "use": "Khởi tạo và kiểm tra con trỏ không trỏ vào vùng nhớ hợp lệ, tránh nhầm lẫn với số nguyên 0 khi nạp chồng hàm.",
+    "example": "#include <iostream>\nvoid f(int) { std::cout << \"int\\n\"; }\nvoid f(int*) { std::cout << \"pointer\\n\"; }\nint main() {\n    f(nullptr); // Gọi chính xác f(int*)\n}",
+    "note": "Luôn khởi tạo con trỏ bằng nullptr nếu chưa gán địa chỉ cụ thể; giải tham chiếu con trỏ nullptr gây sập chương trình (Segmentation Fault).",
+    "related": ["void-type", "bool-type"]
+  }
+]

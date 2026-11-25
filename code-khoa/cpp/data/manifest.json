@@ -1,0 +1,20 @@
+[
+  { "id": "overview", "name": "1. Tổng quan C++", "desc": "Lịch sử, chuẩn C++98–23, compiler, cấu trúc chương trình" },
+  { "id": "types", "name": "2. Kiểu dữ liệu", "desc": "int, float, double, char, bool, void, auto, nullptr_t" },
+  { "id": "variables", "name": "3. Biến và hằng số", "desc": "Khai báo, khởi tạo, const, constexpr, static, volatile" },
+  { "id": "operators", "name": "4. Toán tử", "desc": "Số học, gán, so sánh, logic, bitwise, ternary, sizeof" },
+  { "id": "io", "name": "5. Nhập và xuất", "desc": "cin, cout, cerr, clog, getline, iomanip" },
+  { "id": "control-flow", "name": "6. Điều khiển luồng", "desc": "if, else, switch, case, break, continue, goto" },
+  { "id": "loops", "name": "7. Vòng lặp", "desc": "for, while, do-while, range-based for" },
+  { "id": "functions", "name": "8. Hàm", "desc": "void, return, tham trị/tham chiếu, overload, inline, lambda" },
+  { "id": "arrays-strings", "name": "9. Mảng và chuỗi", "desc": "Array, std::string, C-string (\\0), mảng nhiều chiều" },
+  { "id": "pointers", "name": "10. Con trỏ & Tham chiếu", "desc": "Pointer (*, &), reference, nullptr, pointer arithmetic" },
+  { "id": "structures", "name": "11. Cấu trúc dữ liệu", "desc": "struct, enum, enum class, union, bit-field, using" },
+  { "id": "oop", "name": "12. Hướng đối tượng (OOP)", "desc": "class, object, constructor, destructor, kế thừa, virtual" },
+  { "id": "templates", "name": "13. Templates & Generic", "desc": "Function/Class template, specialization, concepts" },
+  { "id": "stl", "name": "14. Thư viện chuẩn STL", "desc": "vector, map, set, stack, queue, iterator, algorithm" },
+  { "id": "memory", "name": "15. Quản lý bộ nhớ", "desc": "Stack, heap, new, delete, RAII, smart pointers" },
+  { "id": "exceptions", "name": "16. Xử lý ngoại lệ", "desc": "try, catch, throw, std::exception, noexcept, assert" },
+  { "id": "system", "name": "17. File và hệ thống", "desc": "fstream, filesystem, chrono, random, thread, mutex" },
+  { "id": "advanced", "name": "18. Nâng cao & Chuyên sâu", "desc": "namespace, linkage, casts, UB, move semantics" }
+]

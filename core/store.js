@@ -12,7 +12,7 @@ const LabStore = (() => {
     const notes = Array.isArray(raw.notes) ? raw.notes : [];
     const expenses = Array.isArray(raw.expenses) ? raw.expenses : [];
     const budgetMonth = Number(raw.budgetMonth) || 2000; const walletBalance = raw.walletBalance !== undefined ? Number(raw.walletBalance) : 0;
-    const courses = Array.isArray(raw.courses) ? raw.courses : []; const projects = Array.isArray(raw.projects) ? raw.projects : [];
+    const courses = Array.isArray(raw.courses) ? raw.courses : []; const projects = Array.isArray(raw.projects) ? raw.projects : []; const wikiFavs = Array.isArray(raw.wikiFavs) ? raw.wikiFavs : []; const wikiLearned = Array.isArray(raw.wikiLearned) ? raw.wikiLearned : []; const wikiRecent = Array.isArray(raw.wikiRecent) ? raw.wikiRecent : [];
     const customCmds = Array.isArray(raw.customCmds) ? raw.customCmds : [];
     const customVocab = Array.isArray(raw.customVocab) ? raw.customVocab : [];
     const masteredVocab = Array.isArray(raw.masteredVocab) ? raw.masteredVocab : [];
@@ -29,7 +29,7 @@ const LabStore = (() => {
     }
     const state = {
       history, targets, customQuotes, notes,
-      expenses, budgetMonth, walletBalance, courses, projects,
+      expenses, budgetMonth, walletBalance, courses, projects, wikiFavs, wikiLearned, wikiRecent,
       customCmds, customVocab, masteredVocab, telemetry
     };
     if (changed) save(state);

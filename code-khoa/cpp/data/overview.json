@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cpp-structure",
+    "name": "Cấu trúc chương trình C++",
+    "kind": "Khái niệm cốt lõi",
+    "since": "C++98",
+    "def": "Bộ khung tối thiểu để một chương trình C++ biên dịch và thực thi được, bắt đầu từ điểm vào hàm main().",
+    "syntax": "#include <iostream>\n\nint main() {\n    // Mã thực thi\n    return 0;\n}",
+    "use": "Tổ chức chỉ thị tiền xử lý (#include), khai báo không gian tên và điểm khởi chạy chính của ứng dụng.",
+    "example": "#include <iostream>\n\nint main() {\n    std::cout << \"Hello C++!\\n\";\n    return 0;\n}",
+    "note": "Trong C++, hàm main() bắt buộc trả về kiểu int (không dùng void main()). Nếu bỏ qua return 0; ở cuối main(), trình biên dịch tự ngầm hiểu trả về 0.",
+    "related": ["include-directive", "namespace-std", "int-type"]
+  },
+  {
+    "id": "include-directive",
+    "name": "#include",
+    "kind": "Chỉ thị tiền xử lý (Preprocessor)",
+    "since": "C++98",
+    "def": "Chèn toàn bộ nội dung của một tệp tiêu đề (header file) vào vị trí đặt chỉ thị trước khi quá trình biên dịch bắt đầu.",
+    "syntax": "#include <ten_thu_vien>\n#include \"ten_file_cuc_bo.h\"",
+    "use": "Khai báo các hàm, lớp, hằng số từ thư viện chuẩn C++ hoặc từ các file header tự viết.",
+    "example": "#include <iostream> // Thư viện chuẩn\n#include <cmath>    // Hàm toán học sqrt, pow",
+    "note": "Dấu ngoặc nhọn < > tìm trong thư mục thư viện hệ thống; dấu ngoặc kép \" \" ưu tiên tìm trong thư mục dự án hiện tại trước.",
+    "related": ["cpp-structure", "cpp-standards"]
+  },
+  {
+    "id": "cpp-standards",
+    "name": "Các phiên bản chuẩn C++ (C++98 → C++23)",
+    "kind": "Tiêu chuẩn ngôn ngữ",
+    "since": "C++98",
+    "def": "Các cột mốc chuẩn hóa quốc tế (ISO/IEC 14882) quy định cú pháp và thư viện chuẩn của ngôn ngữ C++.",
+    "syntax": "g++ -std=c++17 main.cpp -o main\nclang++ -std=c++20 main.cpp -o main",
+    "use": "Xác định tập tính năng được phép sử dụng khi biên dịch (Modern C++ tính từ C++11 trở đi).",
+    "example": "// Kiểm tra phiên bản chuẩn đang biên dịch\n#include <iostream>\nint main() {\n    std::cout << __cplusplus << '\\n';\n}",
+    "note": "C++11 là bước ngoặt lớn (thêm auto, nullptr, smart pointers, lambda, range-for). C++17 thêm std::filesystem, std::optional; C++20 thêm Concepts, Ranges.",
+    "related": ["auto-keyword", "nullptr-keyword"]
+  },
+  {
+    "id": "compiler-toolchain",
+    "name": "Quá trình biên dịch (Compile & Link)",
+    "kind": "Cơ chế hệ thống",
+    "since": "C++98",
+    "def": "Chuỗi 4 bước biến mã nguồn (.cpp) thành tệp thực thi nhị phân: Tiền xử lý → Biên dịch sang Assembly → Hợp dịch sang Object (.o) → Liên kết (Linker).",
+    "syntax": "clang++ main.cpp -Wall -Wextra -O2 -o app",
+    "use": "Phát hiện lỗi cú pháp/kiểu dữ liệu tại thời điểm biên dịch (compile-time) và tối ưu tốc độ chạy.",
+    "example": "// Trên Termux (Android), dùng clang++:\n// clang++ -std=c++17 -Wall main.cpp -o main && ./main",
+    "note": "Luôn bật cờ -Wall -Wextra để trình biên dịch cảnh báo sớm các lỗi tiềm ẩn như biến chưa khởi tạo hoặc tràn kiểu.",
+    "related": ["cpp-structure"]
+  }
+]

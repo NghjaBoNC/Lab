@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Code Khoa Toàn Thư · C++ Encyclopedia</title>
+  <link rel="stylesheet" href="../core/theme.css?v=13" />
+  <style>
+    .lang-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+    .lang-pill { padding: 6px 12px; border-radius: 999px; font-size: 0.74rem; font-weight: 800; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-sub); white-space: nowrap; }
+    .lang-pill.active { background: #fff; color: var(--text-dark); border-color: #fff; }
+    .quick-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+    .q-btn { padding: 7px 3px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-size: 0.71rem; font-weight: 800; cursor: pointer; }
+    .q-btn.active { background: #fff; color: var(--text-dark); }
+    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .cat-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 15px; padding: 11px; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; min-height: 86px; }
+    .cat-card:active { transform: scale(0.98); background: rgba(255,255,255,0.2); }
+    .cat-t { font-size: 0.82rem; font-weight: 800; color: #fff; line-height: 1.25; }
+    .cat-d { font-size: 0.67rem; color: var(--text-sub); margin-top: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .entry-item { background: var(--card-bg); color: var(--text-dark); border-radius: 15px; padding: 12px 13px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; }
+    .entry-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .entry-name { font-size: 0.92rem; font-weight: 900; color: var(--primary); }
+    .entry-tag { font-size: 0.64rem; font-weight: 800; padding: 2px 7px; border-radius: 999px; background: #f3e8ff; color: #581c87; white-space: nowrap; }
+    .detail-box { background: var(--card-bg); color: var(--text-dark); border-radius: 18px; padding: 15px; display: flex; flex-direction: column; gap: 11px; }
+    .sec-lbl { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; color: var(--primary); letter-spacing: 0.4px; margin-bottom: 3px; }
+    .code-wrap { position: relative; background: #1e1b4b; color: #e0e7ff; border-radius: 12px; padding: 11px; font-family: monospace; font-size: 0.78rem; line-height: 1.45; overflow-x: auto; white-space: pre; }
+    .cp-btn { position: absolute; top: 7px; right: 7px; background: rgba(255,255,255,0.16); color: #fff; border: none; border-radius: 7px; padding: 4px 8px; font-size: 0.68rem; font-weight: 800; cursor: pointer; }
+    .note-box { background: #fef3c7; color: #78350f; border-left: 3.5px solid #f59e0b; padding: 9px 11px; border-radius: 10px; font-size: 0.78rem; line-height: 1.4; }
+    .rel-chip { display: inline-block; padding: 5px 10px; background: #f3e8ff; color: var(--primary); border-radius: 999px; font-size: 0.74rem; font-weight: 800; margin: 3px 4px 0 0; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="top-nav">
+    <a href="../" class="back-btn" id="nav-back">‹ Lab</a>
+    <span class="page-title">Code Khoa Toàn Thư</span>
+  </header>
+
+  <main class="wrap">
+    <div class="lang-bar">
+      <span class="lang-pill active">C++ Encyclopedia (C++98–23)</span>
+      <span class="lang-pill" style="opacity:0.55;">+ Ngôn ngữ khác (Sắp mở)</span>
+    </div>
+
+    <input id="w-search" class="input-box" placeholder="Tìm từ khóa, toán tử, hàm, khái niệm (VD: auto, nullptr, sizeof)..." />
+
+    <div class="quick-tabs" id="q-tabs">
+      <button class="q-btn active" data-tab="cats">18 Danh mục</button>
+      <button class="q-btn" data-tab="recent">Gần đây</button>
+      <button class="q-btn" data-tab="fav">Yêu thích ★</button>
+      <button class="q-btn" data-tab="learned">Đã học ✓</button>
+    </div>
+
+    <div id="view-main"></div>
+    <div id="view-detail" class="hidden"></div>
+  </main>
+
+  <script src="../core/roadmap.js?v=13"></script>
+  <script src="../core/store.js?v=13"></script>
+  <script>
+    let manifest = [];
+    const cache = {};
+    let curTab = 'cats', curCatId = null;
+
+    const loadCat = async (id) => {
+      if (cache[id]) return cache[id];
+      try {
+        const res = await fetch(`cpp/data/${id}.json?v=13`);
+        const arr = await res.json();
+        cache[id] = arr.map(item => ({ ...item, catId: id }));
+      } catch { cache[id] = []; }
+      return cache[id];
+    };
+
+    const loadAllLoaded = async () => {
+      await Promise.all(manifest.map(c => loadCat(c.id)));
+      return Object.values(cache).flat();
+    };
+
+    const showMain = () => {
+      document.getElementById('view-detail').classList.add('hidden');
+      document.getElementById('view-main').classList.remove('hidden');
+      document.getElementById('nav-back').textContent = '‹ Lab';
+      document.getElementById('nav-back').href = '../';
+      document.getElementById('nav-back').onclick = null;
+    };
+
+    const openDetail = async (id) => {
+      const all = await loadAllLoaded();
+      const item = all.find(x => x.id === id);
+      if (!item) return;
+
+      const s = LabStore.load();
+      s.wikiRecent = [id, ...s.wikiRecent.filter(x => x !== id)].slice(0, 15);
+      LabStore.save(s);
+
+      const catObj = manifest.find(c => c.id === item.catId);
+      const isFav = s.wikiFavs.includes(id);
+      const isDone = s.wikiLearned.includes(id);
+
+      const relHtml = (item.related || []).map(rid => {
+        const target = all.find(x => x.id === rid);
+        return target ? `<span class="rel-chip" data-rel="${rid}">${target.name}</span>` : '';
+      }).join('');
+
+      const box = document.getElementById('view-detail');
+      box.innerHTML = `
+        <div class="detail-box">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+            <div>
+              <div style="font-size:0.68rem;font-weight:800;color:var(--primary);">${catObj ? catObj.name : ''} · ${item.since}</div>
+              <h2 style="font-size:1.2rem;font-weight:900;margin-top:2px;">${item.name}</h2>
+              <span class="entry-tag" style="display:inline-block;margin-top:4px;">${item.kind}</span>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button id="btn-fav" class="btn-sec" style="padding:6px 10px;font-size:0.78rem;">${isFav ? '★ Đã thích' : '☆ Thích'}</button>
+              <button id="btn-done" class="btn-pri" style="padding:6px 10px;font-size:0.78rem;background:${isDone ? 'var(--emerald)' : ''};">${isDone ? '✓ Đã học' : 'Đánh dấu học'}</button>
+            </div>
+          </div>
+
+          <div><div class="sec-lbl">Định nghĩa</div><div style="font-size:0.84rem;line-height:1.45;">${item.def}</div></div>
+          <div><div class="sec-lbl">Cú pháp</div><div class="code-wrap"><button class="cp-btn" data-cp="syn">Copy</button><code id="code-syn"></code></div></div>
+          <div><div class="sec-lbl">Công dụng</div><div style="font-size:0.84rem;line-height:1.45;">${item.use}</div></div>
+          <div><div class="sec-lbl">Ví dụ minh họa</div><div class="code-wrap"><button class="cp-btn" data-cp="ex">Copy</button><code id="code-ex"></code></div></div>
+          ${item.note ? `<div class="note-box"><strong>⚠️ Lưu ý kỹ thuật:</strong> ${item.note}</div>` : ''}
+          ${relHtml ? `<div><div class="sec-lbl">Kiến thức liên quan</div><div>${relHtml}</div></div>` : ''}
+        </div>
+      `;
+
+      document.getElementById('code-syn').textContent = item.syntax;
+      document.getElementById('code-ex').textContent = item.example;
+
+      box.querySelectorAll('.cp-btn').forEach(b => b.onclick = () => {
+        const txt = b.dataset.cp === 'syn' ? item.syntax : item.example;
+        navigator.clipboard?.writeText(txt);
+        b.textContent = 'Đã chép ✓';
+        setTimeout(() => b.textContent = 'Copy', 1200);
+      });
+
+      document.getElementById('btn-fav').onclick = () => {
+        const cur = LabStore.load();
+        const i = cur.wikiFavs.indexOf(id);
+        if (i >= 0) cur.wikiFavs.splice(i, 1); else cur.wikiFavs.push(id);
+        LabStore.save(cur); openDetail(id);
+      };
+      document.getElementById('btn-done').onclick = () => {
+        const cur = LabStore.load();
+        const i = cur.wikiLearned.indexOf(id);
+        if (i >= 0) cur.wikiLearned.splice(i, 1); else cur.wikiLearned.push(id);
+        LabStore.save(cur); openDetail(id);
+      };
+      box.querySelectorAll('[data-rel]').forEach(el => el.onclick = () => openDetail(el.dataset.rel));
+
+      document.getElementById('view-main').classList.add('hidden');
+      box.classList.remove('hidden');
+      const back = document.getElementById('nav-back');
+      back.textContent = '‹ Danh sách';
+      back.href = '#';
+      back.onclick = (e) => { e.preventDefault(); showMain(); renderMain(); };
+      window.scrollTo(0, 0);
+    };
+
+    const renderEntryList = (items, emptyMsg, headerHtml = '') => {
+      const s = LabStore.load(), view = document.getElementById('view-main');
+      if (!items.length) {
+        view.innerHTML = `${headerHtml}<div class="glass-card" style="text-align:center;font-size:0.8rem;color:var(--text-sub);">${emptyMsg}</div>`;
+        return;
+      }
+      view.innerHTML = `${headerHtml}<div style="display:flex;flex-direction:column;gap:8px;">` + items.map(x => `
+        <div class="entry-item" data-id="${x.id}">
+          <div class="entry-top">
+            <span class="entry-name">${x.name}</span>
+            <span class="entry-tag">${s.wikiLearned.includes(x.id) ? '✓ ' : ''}${x.since}</span>
+          </div>
+          <div style="font-size:0.76rem;color:#4c1d95;line-height:1.35;">${x.def}</div>
+        </div>
+      `).join('') + `</div>`;
+      view.querySelectorAll('.entry-item').forEach(el => el.onclick = () => openDetail(el.dataset.id));
+    };
+
+    const renderMain = async () => {
+      showMain();
+      const q = document.getElementById('w-search').value.trim().toLowerCase();
+      const view = document.getElementById('view-main');
+
+      if (q) {
+        const all = await loadAllLoaded();
+        const hits = all.filter(x => x.name.toLowerCase().includes(q) || x.def.toLowerCase().includes(q) || x.kind.toLowerCase().includes(q));
+        renderEntryList(hits, `Không tìm thấy mục nào khớp với "${q}"`);
+        return;
+      }
+
+      if (curTab === 'cats') {
+        if (curCatId) {
+          const catObj = manifest.find(c => c.id === curCatId);
+          const items = await loadCat(curCatId);
+          const hdr = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong style="font-size:0.88rem;">${catObj.name}</strong><button id="back-cats" class="btn-sec" style="padding:4px 10px;font-size:0.74rem;">‹ 18 Danh mục</button></div>`;
+          renderEntryList(items, 'Danh mục này đang được bổ sung dữ liệu ở giai đoạn tiếp theo.', hdr);
+          document.getElementById('back-cats').onclick = () => { curCatId = null; renderMain(); };
+          return;
+        }
+        view.innerHTML = `<div class="cat-grid">` + manifest.map(c => `
+          <div class="cat-card" data-cid="${c.id}">
+            <div class="cat-t">${c.name}</div>
+            <div class="cat-d">${c.desc}</div>
+          </div>
+        `).join('') + `</div>`;
+        view.querySelectorAll('.cat-card').forEach(el => el.onclick = () => { curCatId = el.dataset.cid; renderMain(); });
+        return;
+      }
+
+      const all = await loadAllLoaded(), s = LabStore.load();
+      if (curTab === 'recent') {
+        const list = s.wikiRecent.map(id => all.find(x => x.id === id)).filter(Boolean);
+        renderEntryList(list, 'Chưa có lịch sử tra cứu gần đây.');
+      } else if (curTab === 'fav') {
+        const list = s.wikiFavs.map(id => all.find(x => x.id === id)).filter(Boolean);
+        renderEntryList(list, 'Chưa đánh dấu mục yêu thích nào.');
+      } else if (curTab === 'learned') {
+        const list = s.wikiLearned.map(id => all.find(x => x.id === id)).filter(Boolean);
+        renderEntryList(list, 'Chưa đánh dấu mục nào đã học.');
+      }
+    };
+
+    document.querySelectorAll('#q-tabs .q-btn').forEach(b => b.onclick = () => {
+      document.querySelectorAll('#q-tabs .q-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      curTab = b.dataset.tab; curCatId = null;
+      document.getElementById('w-search').value = '';
+      renderMain();
+    });
+    document.getElementById('w-search').oninput = renderMain;
+
+    (async () => {
+      const res = await fetch('cpp/data/manifest.json?v=13');
+      manifest = await res.json();
+      renderMain();
+    })();
+  </script>
+</body>
+</html>

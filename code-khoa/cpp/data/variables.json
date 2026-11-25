@@ -1,0 +1,50 @@
+[
+  {
+    "id": "var-initialization",
+    "name": "Khai báo và Khởi tạo biến",
+    "kind": "Cú pháp cốt lõi",
+    "since": "C++98 (Brace init từ C++11)",
+    "def": "Cấp phát vùng nhớ có tên và gán giá trị ban đầu cho biến. C++11 chuẩn hóa khởi tạo ngoặc nhọn {} (Uniform Initialization).",
+    "syntax": "int a = 5;    // Copy initialization\nint b(5);     // Direct initialization\nint c{5};     // Brace initialization (khuyên dùng)\nint d{};      // Zero-initialization (d = 0)",
+    "use": "Tạo biến với giá trị xác định ngay từ đầu và ngăn chặn lỗi thu hẹp kiểu dữ liệu (narrowing conversion).",
+    "example": "#include <iostream>\nint main() {\n    int x{}; // Tự động bằng 0\n    // int err{3.14}; // Lỗi biên dịch: chống mất dữ liệu!\n    std::cout << x << '\\n';\n}",
+    "note": "Biến cục bộ khai báo kiểu int x; (không khởi tạo) sẽ chứa giá trị rác; đọc giá trị rác đó là Undefined Behavior.",
+    "related": ["const-keyword", "auto-keyword"]
+  },
+  {
+    "id": "const-keyword",
+    "name": "const",
+    "kind": "Từ khóa · Hằng số thời điểm chạy/biên dịch",
+    "since": "C++98",
+    "def": "Chỉ định giá trị của biến hoặc đối tượng không được phép thay đổi sau khi khởi tạo.",
+    "syntax": "const double PI = 3.14159;\nvoid print(const std::string& s);\nconst int* p1; // Con trỏ tới hằng\nint* const p2 = &x; // Hằng con trỏ",
+    "use": "Bảo vệ dữ liệu khỏi bị sửa nhầm, tối ưu truyền tham chiếu hàm lớn mà không tốn chi phí sao chép.",
+    "example": "#include <iostream>\nint main() {\n    const int MAX_N = 100;\n    // MAX_N = 200; // Lỗi biên dịch ngay lập tức\n    std::cout << MAX_N << '\\n';\n}",
+    "note": "Mẹo đọc khai báo con trỏ: đọc từ phải sang trái — const int* là con trỏ trỏ tới int hằng (không sửa được *p1); int* const là con trỏ hằng (không đổi được địa chỉ p2).",
+    "related": ["constexpr-keyword", "var-initialization"]
+  },
+  {
+    "id": "constexpr-keyword",
+    "name": "constexpr",
+    "kind": "Từ khóa · Hằng biểu thức compile-time",
+    "since": "C++11 (mở rộng ở C++14/17/20)",
+    "def": "Khẳng định giá trị của biến hoặc hàm có thể được tính toán ngay tại thời điểm biên dịch (compile-time).",
+    "syntax": "constexpr int square(int x) { return x * x; }\nconstexpr int SIZE = square(8); // Tính sẵn = 64",
+    "use": "Tăng hiệu năng chạy thực tế bằng cách đẩy tính toán sang lúc biên dịch, dùng làm kích thước mảng tĩnh.",
+    "example": "#include <iostream>\nconstexpr int fact(int n) {\n    return (n <= 1) ? 1 : (n * fact(n - 1));\n}\nint main() {\n    int arr[fact(4)]; // Mảng 24 phần tử hợp lệ\n    std::cout << sizeof(arr) / sizeof(int) << '\\n';\n}",
+    "note": "Mọi biến constexpr đều ngầm là const, nhưng ngược lại không đúng (const có thể nhận giá trị lúc chương trình đang chạy như nhập từ cin).",
+    "related": ["const-keyword", "var-initialization"]
+  },
+  {
+    "id": "static-keyword",
+    "name": "static",
+    "kind": "Từ khóa · Thời gian sống tĩnh & Liên kết nội bộ",
+    "since": "C++98",
+    "def": "Thay đổi thời gian sống của biến cục bộ sang toàn bộ vòng đời chương trình, hoặc giới hạn phạm vi truy cập trong nội bộ file/lớp.",
+    "syntax": "void counter() {\n    static int count = 0; // Chỉ khởi tạo 1 lần duy nhất\n    count++;\n}",
+    "use": "Giữ nguyên trạng thái biến cục bộ giữa các lần gọi hàm, hoặc tạo biến/hàm dùng chung cho cả class.",
+    "example": "#include <iostream>\nint nextId() {\n    static int id = 0;\n    return ++id;\n}\nint main() {\n    std::cout << nextId() << ' ' << nextId() << '\\n'; // 1 2\n}",
+    "note": "Trong môi trường đa luồng (C++11 trở đi), việc khởi tạo biến static cục bộ được đảm bảo an toàn luồng (thread-safe).",
+    "related": ["var-initialization", "const-keyword"]
+  }
+]
