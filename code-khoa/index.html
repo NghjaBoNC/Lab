@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Code Khoa Toàn Thư · C++ Encyclopedia</title>
-  <link rel="stylesheet" href="../core/theme.css?v=13" />
+  <link rel="stylesheet" href="../core/theme.css?v=15" />
   <style>
-    .lang-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
-    .lang-pill { padding: 6px 12px; border-radius: 999px; font-size: 0.74rem; font-weight: 800; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-sub); white-space: nowrap; }
-    .lang-pill.active { background: #fff; color: var(--text-dark); border-color: #fff; }
+    .lang-bar { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+    .lang-pill { padding: 6px 11px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; border: 1px solid var(--glass-border); background: #fff; color: var(--text-dark); white-space: nowrap; }
+    .std-toggle { padding: 6px 11px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; cursor: pointer; white-space: nowrap; }
+    .std-toggle.c03 { background: var(--gold); color: #3b0764; border-color: var(--gold); }
     .quick-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
     .q-btn { padding: 7px 3px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: #fff; font-size: 0.71rem; font-weight: 800; cursor: pointer; }
     .q-btn.active { background: #fff; color: var(--text-dark); }
@@ -37,11 +38,11 @@
 
   <main class="wrap">
     <div class="lang-bar">
-      <span class="lang-pill active">C++ Encyclopedia (C++98–23)</span>
-      <span class="lang-pill" style="opacity:0.55;">+ Ngôn ngữ khác (Sắp mở)</span>
+      <span class="lang-pill">C++ Encyclopedia</span>
+      <button id="std-btn" class="std-toggle">Chuẩn: Tất cả (C++98–23)</button>
     </div>
 
-    <input id="w-search" class="input-box" placeholder="Tìm từ khóa, toán tử, hàm, khái niệm (VD: auto, nullptr, sizeof)..." />
+    <input id="w-search" class="input-box" placeholder="Tìm từ khóa, toán tử, hàm, khái niệm..." />
 
     <div class="quick-tabs" id="q-tabs">
       <button class="q-btn active" data-tab="cats">18 Danh mục</button>
@@ -54,17 +55,24 @@
     <div id="view-detail" class="hidden"></div>
   </main>
 
-  <script src="../core/roadmap.js?v=13"></script>
-  <script src="../core/store.js?v=13"></script>
+  <script src="../core/roadmap.js?v=15"></script>
+  <script src="../core/store.js?v=15"></script>
   <script>
     let manifest = [];
     const cache = {};
-    let curTab = 'cats', curCatId = null;
+    let curTab = 'cats', curCatId = null, onlyCpp03 = false;
+
+    const isCpp03Compatible = (item) => {
+      const s = (item.since || '').toLowerCase();
+      return s.startsWith('c++98') || s.startsWith('c++03');
+    };
+
+    const filterByStd = (arr) => onlyCpp03 ? arr.filter(isCpp03Compatible) : arr;
 
     const loadCat = async (id) => {
       if (cache[id]) return cache[id];
       try {
-        const res = await fetch(`cpp/data/${id}.json?v=13`);
+        const res = await fetch(`cpp/data/${id}.json?v=15`);
         const arr = await res.json();
         cache[id] = arr.map(item => ({ ...item, catId: id }));
       } catch { cache[id] = []; }
@@ -161,11 +169,12 @@
 
     const renderEntryList = (items, emptyMsg, headerHtml = '') => {
       const s = LabStore.load(), view = document.getElementById('view-main');
-      if (!items.length) {
+      const filtered = filterByStd(items);
+      if (!filtered.length) {
         view.innerHTML = `${headerHtml}<div class="glass-card" style="text-align:center;font-size:0.8rem;color:var(--text-sub);">${emptyMsg}</div>`;
         return;
       }
-      view.innerHTML = `${headerHtml}<div style="display:flex;flex-direction:column;gap:8px;">` + items.map(x => `
+      view.innerHTML = `${headerHtml}<div style="display:flex;flex-direction:column;gap:8px;">` + filtered.map(x => `
         <div class="entry-item" data-id="${x.id}">
           <div class="entry-top">
             <span class="entry-name">${x.name}</span>
@@ -194,7 +203,7 @@
           const catObj = manifest.find(c => c.id === curCatId);
           const items = await loadCat(curCatId);
           const hdr = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong style="font-size:0.88rem;">${catObj.name}</strong><button id="back-cats" class="btn-sec" style="padding:4px 10px;font-size:0.74rem;">‹ 18 Danh mục</button></div>`;
-          renderEntryList(items, 'Danh mục này đang được bổ sung dữ liệu ở giai đoạn tiếp theo.', hdr);
+          renderEntryList(items, onlyCpp03 ? 'Không có mục C++98/03 nào trong danh mục này.' : 'Danh mục này đang được bổ sung dữ liệu ở giai đoạn tiếp theo.', hdr);
           document.getElementById('back-cats').onclick = () => { curCatId = null; renderMain(); };
           return;
         }
@@ -221,6 +230,14 @@
       }
     };
 
+    document.getElementById('std-btn').onclick = () => {
+      onlyCpp03 = !onlyCpp03;
+      const btn = document.getElementById('std-btn');
+      btn.textContent = onlyCpp03 ? 'Chuẩn: Chỉ C++98/03 ✓' : 'Chuẩn: Tất cả (C++98–23)';
+      btn.classList.toggle('c03', onlyCpp03);
+      if (document.getElementById('view-detail').classList.contains('hidden')) renderMain();
+    };
+
     document.querySelectorAll('#q-tabs .q-btn').forEach(b => b.onclick = () => {
       document.querySelectorAll('#q-tabs .q-btn').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
@@ -231,7 +248,7 @@
     document.getElementById('w-search').oninput = renderMain;
 
     (async () => {
-      const res = await fetch('cpp/data/manifest.json?v=13');
+      const res = await fetch('cpp/data/manifest.json?v=15');
       manifest = await res.json();
       renderMain();
     })();

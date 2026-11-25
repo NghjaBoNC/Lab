@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="core/theme.css?v=14" />
+  <link rel="stylesheet" href="core/theme.css?v=15" />
   <style>
     .hero-lab { display: flex; flex-direction: column; gap: 4px; }
     .lab-sub { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; color: var(--gold); }
@@ -37,7 +37,7 @@
 
   <main class="wrap">
     <section class="glass-card hero-lab">
-      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 12 MODULE</span>
+      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 11 MODULE</span>
       <h1 class="lab-title">NghjaBoNC's Lab</h1>
       <p id="lab-quote" class="lab-status"></p>
     </section>
@@ -75,11 +75,11 @@
         </div>
       </a>
 
-      <a href="lenh/" class="mod-card">
-        <div class="mod-top"><span class="mod-ico">💻</span><span class="mod-tag">1-Chạm</span></div>
+      <a href="code-khoa/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">📚</span><span id="tag-ck" class="mod-tag">C++ Wiki</span></div>
         <div>
-          <div class="mod-name">Sổ Tay Lệnh</div>
-          <div id="live-ln" class="mod-live">Linux · C++ · Git</div>
+          <div class="mod-name">Code Khoa</div>
+          <div id="live-ck" class="mod-live">Bách khoa toàn thư C++</div>
         </div>
       </a>
 
@@ -100,7 +100,7 @@
       </a>
 
       <a href="thong-ke/" class="mod-card">
-        <div class="mod-top"><span class="mod-ico">📊</span><span class="mod-tag">Dữ liệu</span></div>
+        <div class="mod-top"><span class="mod-ico">📊</span><span id="tag-tk" class="mod-tag">Dữ liệu</span></div>
         <div>
           <div class="mod-name">Thống Kê</div>
           <div id="live-tk" class="mod-live">0 phút tích lũy</div>
@@ -115,20 +115,9 @@
         </div>
       </a>
 
-      <a href="code-khoa/" class="mod-card">
-        <div class="mod-top"><span class="mod-ico">📚</span><span class="mod-tag">C++ Wiki</span></div>
-        <div>
-          <div class="mod-name">Code Khoa</div>
-          <div class="mod-live">Bách khoa toàn thư C++</div>
-        </div>
-      </a>
-
-      <a href="du-an/" class="mod-card">
-        <div class="mod-top"><span class="mod-ico">🚀</span><span id="tag-da" class="mod-tag">Mở</span></div>
-        <div>
-          <div class="mod-name">Dự Án Khác</div>
-          <div class="mod-live">Kho dự án cá nhân</div>
-        </div>
+      <a href="du-an/" class="mod-card" style="grid-column: span 2; min-height: 76px;">
+        <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">🚀 Dự Án Khác</span><span id="tag-da" class="mod-tag">Mở</span></div>
+        <div id="live-da" class="mod-live">Không gian lưu trữ các dự án cá nhân</div>
       </a>
 
       <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;">
@@ -139,8 +128,8 @@
   </main>
 
   <script src="core/quotes.js"></script>
-  <script src="core/roadmap.js?v=14"></script>
-  <script src="core/store.js?v=14"></script>
+  <script src="core/roadmap.js?v=15"></script>
+  <script src="core/store.js?v=15"></script>
   <script>
     const s = LabStore.load();
     const today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
@@ -166,7 +155,9 @@
     document.getElementById('tag-ct').textContent = `${monSpend}k/${s.budgetMonth}k`;
     document.getElementById('live-ct').textContent = `Còn: ${bal >= 1000 || bal <= -1000 ? (bal/1000).toFixed(2).replace(/\.?0+$/,'')+'tr' : bal+'k'}`;
 
-    document.getElementById('live-ln').textContent = `${14 + s.customCmds.length} lệnh sẵn sàng copy`;
+    document.getElementById('tag-ck').textContent = `${s.wikiLearned.length} đã học`;
+    document.getElementById('live-ck').textContent = `18 danh mục · C++98–23`;
+
     document.getElementById('tag-tv').textContent = `${s.masteredVocab.length}/${30 + s.customVocab.length}`;
     document.getElementById('live-tv').textContent = `Đã thuộc ${s.masteredVocab.length} từ`;
 
