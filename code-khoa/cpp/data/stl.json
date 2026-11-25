@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "stl-vector",
+    "name": "std::vector (<vector>)",
+    "kind": "Container tuần tự · Thư viện chuẩn STL",
+    "since": "C++98",
+    "def": "Mảng động tự động mở rộng kích thước khi thêm phần tử, lưu trữ dữ liệu liên tiếp trên bộ nhớ Heap với tốc độ truy cập chỉ số O(1).",
+    "syntax": "#include <vector>\nstd::vector<int> v;\nv.push_back(10);\nv.size(); v.pop_back(); v.clear();",
+    "use": "Thay thế mảng tĩnh và cấp phát động new[]/delete[] thủ công trong hầu hết mọi bài toán.",
+    "example": "#include <iostream>\n#include <vector>\nint main() {\n    std::vector<int> v;\n    v.push_back(5); v.push_back(15);\n    for (size_t i = 0; i < v.size(); ++i) std::cout << v[i] << ' ';\n}",
+    "note": "v[i] truy cập nhanh nhưng không kiểm tra vượt biên; v.at(i) kiểm tra vượt biên và ném ngoại lệ std::out_of_range nếu sai chỉ số.",
+    "related": ["stl-algorithms", "stl-iterators", "static-array"]
+  },
+  {
+    "id": "stl-map-set",
+    "name": "std::map & std::set (<map>, <set>)",
+    "kind": "Container liên kết · Cây đỏ-đen (Red-Black Tree)",
+    "since": "C++98 (unordered_map/set từ C++11)",
+    "def": "std::set lưu tập hợp phần tử duy nhất tự động sắp xếp tăng dần; std::map lưu các cặp khóa-giá trị (key-value) duy nhất theo khóa; thao tác tìm/thêm/xóa mất O(log N).",
+    "syntax": "#include <map>\n#include <set>\nstd::set<int> s; s.insert(5); s.count(5);\nstd::map<std::string, int> mp; mp[\"UHL\"] = 1;",
+    "use": "Đếm tần suất xuất hiện, loại bỏ phần tử trùng lặp và ánh xạ tra cứu nhanh theo khóa.",
+    "example": "#include <iostream>\n#include <map>\nint main() {\n    std::map<char, int> cnt;\n    cnt['a']++; cnt['b'] += 2;\n    std::cout << cnt['a'] << ' ' << cnt['b'] << '\\n'; // 1 2\n}",
+    "note": "Nếu chỉ cần tra cứu O(1) trung bình mà không cần thứ tự sắp xếp, dùng std::unordered_map / std::unordered_set (từ C++11).",
+    "related": ["stl-vector", "stl-iterators"]
+  },
+  {
+    "id": "stl-stack-queue",
+    "name": "std::stack, std::queue & std::priority_queue",
+    "kind": "Container Adapter (<stack>, <queue>)",
+    "since": "C++98",
+    "def": "Ngăn xếp LIFO (vào sau ra trước - stack), hàng đợi FIFO (vào trước ra trước - queue) và hàng đợi ưu tiên (Heap tối đa - priority_queue).",
+    "syntax": "std::stack<int> st; st.push(1); st.top(); st.pop();\nstd::queue<int> q;  q.push(1);  q.front(); q.pop();",
+    "use": "Cài đặt thuật toán duyệt đồ thị DFS (stack), BFS (queue), Dijkstra (priority_queue) và kiểm tra ngoặc đúng.",
+    "example": "#include <iostream>\n#include <stack>\nint main() {\n    std::stack<int> st;\n    st.push(10); st.push(20);\n    std::cout << st.top() << '\\n'; // 20\n    st.pop();\n}",
+    "note": "Hàm .pop() trong STL chỉ xóa phần tử đỉnh/đầu chứ không trả về giá trị — phải đọc giá trị qua .top() hoặc .front() trước khi gọi .pop().",
+    "related": ["stl-vector", "stl-algorithms"]
+  },
+  {
+    "id": "stl-iterators",
+    "name": "Iterator (Trình lặp STL)",
+    "kind": "Khái niệm cốt lõi STL",
+    "since": "C++98",
+    "def": "Đối tượng đóng vai trò như con trỏ tổng quát giúp duyệt qua các phần tử của mọi container STL theo cùng một giao diện thống nhất (begin(), end()).",
+    "syntax": "for (std::vector<int>::iterator it = v.begin(); it != v.end(); ++it) {\n    std::cout << *it << ' ';\n}",
+    "use": "Kết nối các container STL với các thuật toán trong thư viện <algorithm>.",
+    "example": "#include <iostream>\n#include <set>\nint main() {\n    std::set<int> s; s.insert(30); s.insert(10);\n    for (std::set<int>::iterator it = s.begin(); it != s.end(); ++it)\n        std::cout << *it << ' '; // 10 30\n}",
+    "note": "end() trỏ tới vị trí SAU phần tử cuối cùng (past-the-end), tuyệt đối không giải tham chiếu *v.end(). Trong C++11+ có thể rút gọn kiểu iterator bằng từ khóa auto.",
+    "related": ["stl-vector", "stl-algorithms", "auto-keyword"]
+  },
+  {
+    "id": "stl-algorithms",
+    "name": "Thuật toán STL (<algorithm>: sort, binary_search, reverse)",
+    "kind": "Thư viện chuẩn (<algorithm>)",
+    "since": "C++98",
+    "def": "Bộ sưu tập hơn 100 thuật toán tối ưu sẵn (sắp xếp O(N log N), tìm kiếm nhị phân, đảo ngược, tìm min/max) hoạt động trên cặp iterator [first, last).",
+    "syntax": "#include <algorithm>\nstd::sort(arr, arr + n);\nstd::sort(v.begin(), v.end());\nbool ok = std::binary_search(v.begin(), v.end(), target);",
+    "use": "Xử lý mảng và container nhanh, chuẩn xác thay vì tự viết lại thuật toán sắp xếp/tìm kiếm cơ bản.",
+    "example": "#include <iostream>\n#include <algorithm>\nint main() {\n    int a[5] = {5, 1, 4, 2, 3};\n    std::sort(a, a + 5);\n    for (int i = 0; i < 5; ++i) std::cout << a[i] << ' '; // 1 2 3 4 5\n}",
+    "note": "std::binary_search, std::lower_bound và std::upper_bound chỉ cho kết quả đúng khi dãy đã được sắp xếp tăng dần trước đó.",
+    "related": ["stl-vector", "stl-iterators", "static-array"]
+  }
+]

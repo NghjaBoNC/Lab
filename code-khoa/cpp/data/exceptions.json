@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": "try-catch-throw",
+    "name": "try / catch / throw & std::exception",
+    "kind": "Từ khóa & Thư viện (<stdexcept>)",
+    "since": "C++98",
+    "def": "Cơ chế tách biệt mã xử lý lỗi khỏi luồng logic chính: throw ném ra đối tượng ngoại lệ khi gặp sự cố, khối try bao bọc mã có thể lỗi và catch bắt lấy để xử lý.",
+    "syntax": "#include <stdexcept>\ntry {\n    if (b == 0) throw std::runtime_error(\"Chia cho 0\");\n} catch (const std::exception& e) {\n    std::cerr << e.what() << '\\n';\n}",
+    "use": "Xử lý các lỗi nghiêm trọng lúc chạy (hết bộ nhớ, chia cho 0, truy cập ngoài biên .at(), mở file thất bại).",
+    "example": "#include <iostream>\n#include <stdexcept>\ndouble divSafe(double a, double b) {\n    if (b == 0) throw std::invalid_argument(\"Mau so bang 0\");\n    return a / b;\n}\nint main() {\n    try { std::cout << divSafe(5, 0); }\n    catch (const std::exception& e) { std::cout << \"Bat loi: \" << e.what() << '\\n'; }\n}",
+    "note": "Luôn bắt ngoại lệ bằng tham chiếu hằng (catch (const std::exception& e)) để tránh hiện tượng cắt cụt đối tượng (Object Slicing).",
+    "related": ["assert-noexcept"]
+  },
+  {
+    "id": "assert-noexcept",
+    "name": "assert, static_assert & noexcept",
+    "kind": "Macro & Từ khóa kiểm tra",
+    "since": "C++98 (static_assert/noexcept từ C++11)",
+    "def": "assert() kiểm tra điều kiện bất biến lúc chạy trong bản Debug; static_assert() kiểm tra điều kiện lúc biên dịch; noexcept cam kết hàm không ném ngoại lệ.",
+    "syntax": "#include <cassert>\nassert(ptr != NULL);\nstatic_assert(sizeof(int) == 4, \"Can int 32-bit\"); // C++11+",
+    "use": "Phát hiện sớm lỗi giả định logic của lập trình viên ngay trong quá trình phát triển.",
+    "example": "#include <cassert>\nint getFirst(const int* a, int n) {\n    assert(a != NULL && n > 0);\n    return a[0];\n}\nint main() { int x[2] = {7, 8}; getFirst(x, 2); }",
+    "note": "assert() sẽ tự động bị vô hiệu hóa hoàn toàn khi biên dịch bản phát hành với cờ -DNDEBUG, nên không đặt biểu thức có tác dụng phụ (như assert(i++)) bên trong.",
+    "related": ["try-catch-throw"]
+  }
+]

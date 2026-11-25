@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "stack-vs-heap",
+    "name": "Bộ nhớ Stack vs Heap",
+    "kind": "Kiến trúc bộ nhớ chương trình",
+    "since": "C++98",
+    "def": "Stack là vùng nhớ cấp phát tự động theo cơ chế LIFO cho biến cục bộ và lời gọi hàm (tốc độ cực nhanh, dung lượng nhỏ ~1–8MB); Heap là vùng nhớ động lớn do lập trình viên tự quản lý.",
+    "syntax": "int localArr[1000];         // Nằm trên Stack (tự hủy khi hết hàm)\nint* heapArr = new int[1000000]; // Nằm trên Heap (tồn tại đến khi delete[])",
+    "use": "Chọn nơi lưu trữ dữ liệu phù hợp để tránh lỗi tràn ngăn xếp (Stack Overflow) khi khai báo mảng kích thước lớn.",
+    "example": "#include <iostream>\nint main() {\n    int stackVar = 10;\n    int* heapVar = new int(20);\n    std::cout << stackVar + *heapVar << '\\n';\n    delete heapVar;\n}",
+    "note": "Không bao giờ trả về con trỏ hoặc tham chiếu trỏ tới biến cục bộ trên Stack từ một hàm, vì vùng nhớ đó bị thu hồi ngay khi hàm kết thúc (Dangling Pointer).",
+    "related": ["dynamic-allocation-basic", "raii-idiom"]
+  },
+  {
+    "id": "raii-idiom",
+    "name": "RAII (Resource Acquisition Is Initialization)",
+    "kind": "Kỹ thuật thiết kế cốt lõi C++",
+    "since": "C++98",
+    "def": "Gắn vòng đời của tài nguyên (bộ nhớ Heap, file, khóa mutex) với vòng đời của một đối tượng trên Stack: chiếm giữ trong Constructor và tự động giải phóng trong Destructor.",
+    "syntax": "{\n    std::ifstream file(\"data.txt\"); // Mở file\n    // Sử dụng file...\n} // Tự động đóng file khi ra khỏi dấu }, kể cả khi có lỗi!",
+    "use": "Triệt tiêu hoàn toàn lỗi quên giải phóng bộ nhớ hoặc quên đóng file mà không cần bộ thu gom rác (Garbage Collector).",
+    "example": "#include <vector>\nvoid safeWork() {\n    std::vector<int> v(1000, 1); // Cấp phát Heap bên trong\n} // Destructor của vector tự gọi delete[] tại đây",
+    "note": "RAII là triết lý quan trọng nhất phân biệt C++ hiện đại với ngôn ngữ C thuần túy.",
+    "related": ["ctor-dtor", "smart-pointers"]
+  },
+  {
+    "id": "smart-pointers",
+    "name": "Smart Pointers (unique_ptr, shared_ptr, weak_ptr)",
+    "kind": "Thư viện chuẩn (<memory>)",
+    "since": "C++11 (make_unique từ C++14)",
+    "def": "Các lớp bao bọc con trỏ thô theo nguyên lý RAII, tự động gọi delete khi không còn đối tượng nào sở hữu vùng nhớ.",
+    "syntax": "#include <memory>\nstd::unique_ptr<int> p1 = std::make_unique<int>(42);\nstd::shared_ptr<int> p2 = std::make_shared<int>(99);",
+    "use": "Quản lý đối tượng động an toàn tuyệt đối: unique_ptr cho quyền sở hữu duy nhất, shared_ptr đếm tham chiếu dùng chung.",
+    "example": "#include <iostream>\n#include <memory>\nint main() {\n    auto p = std::make_unique<int>(123);\n    std::cout << *p << '\\n';\n} // Tự giải phóng, không cần delete",
+    "note": "Chỉ có từ C++11 trở lên (C++03 chỉ có std::auto_ptr đã bị loại bỏ từ C++17). Trong C++ hiện đại, tránh dùng new/delete trực tiếp mà ưu tiên std::make_unique.",
+    "related": ["raii-idiom", "dynamic-allocation-basic"]
+  }
+]

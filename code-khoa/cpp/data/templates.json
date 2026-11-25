@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "function-template",
+    "name": "Function Template (Hàm khuôn mẫu)",
+    "kind": "Từ khóa · Lập trình tổng quát (Generic)",
+    "since": "C++98",
+    "def": "Viết một khuôn mẫu hàm duy nhất làm việc được với mọi kiểu dữ liệu (int, double, string...) mà trình biên dịch tự sinh mã cụ thể lúc biên dịch.",
+    "syntax": "template <typename T>\nT myMax(T a, T b) {\n    return (a > b) ? a : b;\n}",
+    "use": "Tránh lặp lại code giống hệt nhau chỉ khác kiểu dữ liệu (như hàm hoán đổi swap, tìm max/min, sắp xếp).",
+    "example": "#include <iostream>\ntemplate <typename T>\nvoid mySwap(T& a, T& b) { T t = a; a = b; b = t; }\nint main() {\n    int x = 1, y = 2; mySwap(x, y);\n    std::cout << x << ' ' << y << '\\n';\n}",
+    "note": "Trong khai báo template <typename T> và template <class T> hoàn toàn tương đương nhau. Toàn bộ định nghĩa template thường phải đặt trong file header (.h) thay vì tách sang .cpp.",
+    "related": ["class-template", "function-overloading"]
+  },
+  {
+    "id": "class-template",
+    "name": "Class Template & Specialization",
+    "kind": "Từ khóa · Lớp khuôn mẫu",
+    "since": "C++98",
+    "def": "Xây dựng cấu trúc dữ liệu tổng quát cho kiểu phần tử bất kỳ (nền tảng của toàn bộ thư viện STL như std::vector<T>); Specialization cho phép tùy biến riêng cho một kiểu cụ thể.",
+    "syntax": "template <typename T>\nclass Pair {\npublic:\n    T first, second;\n};",
+    "use": "Tự cài đặt các cấu trúc dữ liệu Stack<T>, Queue<T>, LinkedList<T> dùng chung cho mọi kiểu.",
+    "example": "#include <iostream>\ntemplate <typename T>\nstruct Box { T val; };\nint main() {\n    Box<int> b1 = {10}; Box<double> b2 = {3.5};\n    std::cout << b1.val << ' ' << b2.val << '\\n';\n}",
+    "note": "Trong C++03, khi lồng hai template nhau (ví dụ std::vector<std::vector<int> >) bắt buộc phải có dấu cách giữa hai dấu >> để tránh trình biên dịch hiểu nhầm thành toán tử dịch bit >>; từ C++11 không cần dấu cách nữa.",
+    "related": ["function-template", "stl-vector", "concepts-cpp20"]
+  },
+  {
+    "id": "concepts-cpp20",
+    "name": "Concepts & Ràng buộc Template (requires)",
+    "kind": "Từ khóa · Ràng buộc kiểu compile-time",
+    "since": "C++20",
+    "def": "Đặt điều kiện rõ ràng cho tham số kiểu T của template ngay từ đầu, giúp báo lỗi ngắn gọn, dễ hiểu thay vì hàng trăm dòng lỗi template rối rắm.",
+    "syntax": "#include <concepts>\ntemplate <std::integral T>\nT gcd(T a, T b);",
+    "use": "Giới hạn template chỉ nhận số nguyên, số thực hoặc các kiểu hỗ trợ phép so sánh nhất định.",
+    "example": "#include <iostream>\n#include <concepts>\ntemplate <std::integral T>\nT addInt(T a, T b) { return a + b; }\nint main() { std::cout << addInt(3, 4) << '\\n'; }",
+    "note": "Tính năng chỉ có từ C++20 trở đi (biên dịch với -std=c++20). Trong C++03/11 muốn ràng buộc kiểu phải dùng kỹ thuật SFINAE (std::enable_if) phức tạp hơn nhiều.",
+    "related": ["function-template", "class-template"]
+  }
+]

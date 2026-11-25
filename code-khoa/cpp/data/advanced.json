@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "namespace-std",
+    "name": "namespace (Không gian tên)",
+    "kind": "Từ khóa · Tổ chức phạm vi tên",
+    "since": "C++98",
+    "def": "Gom nhóm các định danh (biến, hàm, lớp) vào một phạm vi riêng biệt để tránh xung đột trùng tên giữa các thư viện lớn.",
+    "syntax": "namespace UHL {\n    int code = 84;\n}\nint x = UHL::code; // Toán tử phân giải phạm vi ::",
+    "use": "Tổ chức dự án lớn và phân biệt thành phần của thư viện chuẩn (std::) với hàm tự viết.",
+    "example": "#include <iostream>\nnamespace Math {\n    int sqr(int x) { return x * x; }\n}\nint main() { std::cout << Math::sqr(5) << '\\n'; }",
+    "note": "Tránh đặt using namespace std; trong các file tiêu đề (.h) vì nó làm ô nhiễm không gian tên của mọi file #include header đó.",
+    "related": ["cpp-structure"]
+  },
+  {
+    "id": "cpp-casts",
+    "name": "Ép kiểu tường minh (static_cast, const_cast, reinterpret_cast)",
+    "kind": "Toán tử ép kiểu an toàn",
+    "since": "C++98",
+    "def": "Bộ 4 toán tử ép kiểu rõ ràng mục đích của C++ thay cho cú pháp ép kiểu (type)val dễ gây lỗi của C: static_cast (chuyển kiểu hợp lệ lúc biên dịch), dynamic_cast (đa hình), const_cast (bỏ/thêm const), reinterpret_cast (ép bit cấp thấp).",
+    "syntax": "double avg = static_cast<double>(sum) / count;",
+    "use": "Kiểm soát chặt chẽ việc chuyển đổi kiểu dữ liệu và dễ dàng tìm kiếm các chỗ ép kiểu trong mã nguồn.",
+    "example": "#include <iostream>\nint main() {\n    int a = 5, b = 2;\n    std::cout << static_cast<double>(a) / b << '\\n'; // 2.5\n}",
+    "note": "Luôn ưu tiên static_cast thay vì ép kiểu kiểu C (double)a vì trình biên dịch sẽ báo lỗi nếu hai kiểu hoàn toàn không tương thích.",
+    "related": ["arithmetic-operators", "virtual-polymorphism"]
+  },
+  {
+    "id": "undefined-behavior",
+    "name": "Undefined Behavior (UB - Hành vi không xác định)",
+    "kind": "Khái niệm ngôn ngữ cốt lõi",
+    "since": "C++98",
+    "def": "Những thao tác vi phạm quy tắc chuẩn ngôn ngữ mà trình biên dịch không bắt buộc phải kiểm tra; chương trình có thể chạy đúng ngẫu nhiên, cho kết quả sai hoặc sập bất cứ lúc nào.",
+    "syntax": "// Các ví dụ gây UB kinh điển:\n// 1. Đọc biến chưa khởi tạo\n// 2. Truy cập ngoài biên mảng a[-1] hoặc a[n]\n// 3. Giải tham chiếu con trỏ null hoặc con trỏ đã delete\n// 4. Tràn số nguyên có dấu (INT_MAX + 1)",
+    "use": "Nhận diện và phòng tránh các lỗi ngầm nguy hiểm nhất khi lập trình C/C++.",
+    "example": "#include <iostream>\nint main() {\n    int x = 0; // Luôn khởi tạo biến để tránh UB\n    std::cout << x << '\\n';\n}",
+    "note": "Trình biên dịch tối ưu hóa (-O2) luôn giả định chương trình không bao giờ chứa UB, nên một dòng UB có thể làm hỏng logic của cả các dòng code xung quanh.",
+    "related": ["pointer-basics", "static-array", "var-initialization"]
+  },
+  {
+    "id": "move-semantics",
+    "name": "Move Semantics (Rvalue Reference && & std::move)",
+    "kind": "Tính năng tối ưu hiệu năng",
+    "since": "C++11",
+    "def": "Cơ chế chuyển giao trực tiếp quyền sở hữu tài nguyên (như con trỏ vùng nhớ của vector/string tạm thời) sang đối tượng mới thay vì sao chép toàn bộ dữ liệu.",
+    "syntax": "#include <utility>\nstd::vector<int> v2 = std::move(v1); // Chuyển ruột v1 sang v2 trong O(1)",
+    "use": "Tăng tốc độ truyền và trả về các đối tượng chứa dữ liệu lớn trên Heap.",
+    "example": "#include <iostream>\n#include <string>\n#include <utility>\nint main() {\n    std::string a = \"Du lieu rat dai...\";\n    std::string b = std::move(a);\n    std::cout << b << '\\n';\n}",
+    "note": "Sau khi gọi std::move(a), đối tượng a vẫn hợp lệ nhưng rơi vào trạng thái rỗng/không xác định — không nên đọc lại giá trị cũ của a trừ khi gán giá trị mới cho nó.",
+    "related": ["stl-vector", "smart-pointers"]
+  }
+]

@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "struct-keyword",
+    "name": "struct (Cấu trúc dữ liệu tự định nghĩa)",
+    "kind": "Từ khóa · Kiểu dữ liệu phức hợp",
+    "since": "C++98",
+    "def": "Gom nhóm nhiều biến (có thể khác kiểu dữ liệu) và hàm thành viên vào một kiểu dữ liệu mới; mặc định các thành viên có quyền truy cập public.",
+    "syntax": "struct SinhVien {\n    char maSV[15];\n    double gpa;\n};",
+    "use": "Biểu diễn các thực thể dữ liệu (sinh viên, tọa độ điểm, phân số, node danh sách liên kết).",
+    "example": "#include <iostream>\nstruct Point { int x, y; };\nint main() {\n    Point p = {3, 4};\n    std::cout << p.x << \", \" << p.y << '\\n';\n}",
+    "note": "Trong C++, không cần viết lại từ khóa struct khi khai báo biến (chỉ cần viết Point p; thay vì struct Point p; như ngôn ngữ C). Đừng quên dấu ; sau dấu ngoặc nhọn đóng.",
+    "related": ["class-keyword", "enum-keyword", "typedef-using"]
+  },
+  {
+    "id": "enum-keyword",
+    "name": "enum & enum class (Kiểu liệt kê)",
+    "kind": "Từ khóa · Kiểu liệt kê hằng số",
+    "since": "C++98 (enum class từ C++11)",
+    "def": "Định nghĩa tập hợp các hằng số nguyên có tên gọi; enum class (scoped enum) khắc phục việc rò rỉ tên ra ngoài phạm vi và cấm ép kiểu ngầm sang int.",
+    "syntax": "enum Color { RED, GREEN, BLUE };              // C++98/03\nenum class Status { OK = 200, NOT_FOUND = 404 }; // C++11+",
+    "use": "Thay thế các con số ma thuật (magic numbers) bằng tên hằng có ý nghĩa rõ ràng.",
+    "example": "#include <iostream>\nenum Day { MON = 2, TUE, WED };\nint main() {\n    Day d = TUE;\n    std::cout << d << '\\n'; // 3\n}",
+    "note": "Trên trình biên dịch C++03 chỉ dùng được enum thường (các hằng số tự ngầm ép kiểu sang int và dễ trùng tên nếu khai báo 2 enum cùng phạm vi).",
+    "related": ["struct-keyword", "switch-case-stmt"]
+  },
+  {
+    "id": "union-keyword",
+    "name": "union (Hợp nhất bộ nhớ)",
+    "kind": "Từ khóa · Kiểu dữ liệu dùng chung vùng nhớ",
+    "since": "C++98",
+    "def": "Kiểu dữ liệu đặc biệt mà tất cả thành viên đều chia sẻ chung một vùng nhớ vật lý; kích thước của union bằng kích thước thành viên lớn nhất.",
+    "syntax": "union Data {\n    int i;\n    float f;\n    char bytes[4];\n};",
+    "use": "Tiết kiệm RAM trong hệ thống nhúng hoặc đọc biểu diễn nhị phân từng byte của một biến số.",
+    "example": "#include <iostream>\nunion Pack { int num; unsigned char b[4]; };\nint main() {\n    Pack p; p.num = 0x12345678;\n    std::cout << std::hex << (int)p.b[0] << '\\n';\n}",
+    "note": "Tại một thời điểm chỉ có thể sử dụng hợp lệ một thành viên vừa được gán giá trị gần nhất; trong C++03, union không được chứa đối tượng có hàm tạo/hủy phức tạp (như std::string).",
+    "related": ["struct-keyword", "bitwise-operators"]
+  },
+  {
+    "id": "typedef-using",
+    "name": "typedef & using (Bí danh kiểu dữ liệu)",
+    "kind": "Từ khóa · Type Alias",
+    "since": "C++98 (using alias từ C++11)",
+    "def": "Đặt một tên gọi ngắn gọn, dễ đọc hơn cho một kiểu dữ liệu phức tạp hoặc dài dòng.",
+    "syntax": "typedef unsigned long long ull; // C++98/03\nusing ull = unsigned long long; // C++11+ (hỗ trợ cả template)",
+    "use": "Rút gọn khai báo kiểu số nguyên lớn, con trỏ hàm hoặc kiểu lồng nhau trong STL.",
+    "example": "#include <iostream>\ntypedef long long ll;\nint main() {\n    ll big = 100000000000LL;\n    std::cout << big << '\\n';\n}",
+    "note": "typedef hoạt động trên mọi chuẩn từ C++98/03, còn using = gọn hơn khi viết bí danh cho con trỏ hàm và bắt buộc dùng nếu muốn tạo alias template (C++11+).",
+    "related": ["struct-keyword", "int-type"]
+  }
+]

@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": "fstream-io",
+    "name": "Đọc & Ghi tệp tin (<fstream>: ifstream, ofstream)",
+    "kind": "Thư viện chuẩn (<fstream>)",
+    "since": "C++98",
+    "def": "Cung cấp các lớp luồng tệp tin: std::ifstream (đọc file), std::ofstream (ghi file) và std::fstream (vừa đọc vừa ghi) với cú pháp giống hệt cin/cout.",
+    "syntax": "#include <fstream>\nstd::ifstream fin(\"input.txt\");\nstd::ofstream fout(\"output.txt\");\nint x; fin >> x; fout << x * 2;",
+    "use": "Lưu trữ dữ liệu bền vững ra ổ đĩa và đọc bộ test đầu vào/đầu ra trong lập trình thi đấu.",
+    "example": "#include <fstream>\nint main() {\n    std::ofstream out(\"test.txt\");\n    if (out.is_open()) { out << \"Hello File\\n\"; out.close(); }\n}",
+    "note": "Trong C++03, hàm mở file chỉ nhận chuỗi C-string (const char*), nên nếu tên file là std::string thì phải viết fin.open(filename.c_str()); từ C++11 trở đi mới truyền trực tiếp std::string được.",
+    "related": ["cin-object", "cout-object", "raii-idiom"]
+  },
+  {
+    "id": "chrono-random",
+    "name": "Thời gian (<chrono>) & Sinh số ngẫu nhiên (<random>)",
+    "kind": "Thư viện chuẩn hiện đại",
+    "since": "C++11",
+    "def": "<chrono> cung cấp đồng hồ đo thời gian độ chính xác nano-giây; <random> cung cấp bộ sinh số giả ngẫu nhiên chất lượng cao (Mersenne Twister mt19937).",
+    "syntax": "#include <random>\nstd::mt19937 rng(42);\nstd::uniform_int_distribution<int> dist(1, 100);\nint val = dist(rng);",
+    "use": "Đo hiệu năng thực thi thuật toán và sinh dữ liệu ngẫu nhiên phân phối đều thay cho hàm rand() cũ kỹ.",
+    "example": "#include <iostream>\n#include <random>\nint main() {\n    std::mt19937 gen(12345);\n    std::uniform_int_distribution<int> d(1, 6);\n    std::cout << \"Xuc xac: \" << d(gen) << '\\n';\n}",
+    "note": "Trên trình biên dịch C++03 cũ không có <random>/<chrono>, phải dùng std::srand(std::time(0)) và std::rand() % N từ <cstdlib> và <ctime>.",
+    "related": ["filesystem-threads"]
+  },
+  {
+    "id": "filesystem-threads",
+    "name": "Hệ thống tệp (<filesystem>) & Đa luồng (<thread>, <mutex>)",
+    "kind": "Thư viện chuẩn hệ thống",
+    "since": "C++11 (<thread>) / C++17 (<filesystem>)",
+    "def": "std::thread khởi tạo luồng thực thi song song trên nhiều nhân CPU; std::mutex đồng bộ truy cập dữ liệu chung; std::filesystem thao tác thư mục/đường dẫn đa nền tảng.",
+    "syntax": "#include <thread>\n#include <filesystem>\nstd::thread t(workerFunc);\nt.join();",
+    "use": "Xây dựng ứng dụng đa luồng hiệu năng cao và công cụ quét/quản lý tệp tin hệ thống.",
+    "example": "#include <iostream>\n#include <thread>\nvoid task() { std::cout << \"Luong phu\\n\"; }\nint main() { std::thread t(task); t.join(); }",
+    "note": "Khi biên dịch code dùng <thread> trên Linux/Termux, thường cần thêm cờ -pthread (ví dụ: clang++ -std=c++17 -pthread main.cpp).",
+    "related": ["chrono-random", "fstream-io"]
+  }
+]

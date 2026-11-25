@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "class-keyword",
+    "name": "class, Object & Đóng gói (private, public, protected)",
+    "kind": "Từ khóa · Lập trình hướng đối tượng",
+    "since": "C++98",
+    "def": "Khuôn mẫu định nghĩa đối tượng kết hợp cả dữ liệu (thuộc tính) và hành vi (phương thức), kèm cơ chế kiểm soát quyền truy cập mặc định là private.",
+    "syntax": "class Box {\nprivate:\n    double width;\npublic:\n    void setWidth(double w) { width = w; }\n    double getWidth() const { return width; }\n};",
+    "use": "Ẩn giấu dữ liệu nội bộ (Encapsulation) và chỉ cho phép tương tác qua giao diện phương thức an toàn.",
+    "example": "#include <iostream>\nclass Counter {\n    int val;\npublic:\n    Counter() : val(0) {}\n    void inc() { ++val; }\n    int get() const { return val; }\n};\nint main() { Counter c; c.inc(); std::cout << c.get() << '\\n'; }",
+    "note": "Khác biệt duy nhất về mặt cú pháp giữa struct và class trong C++ là quyền truy cập mặc định: struct mặc định public, còn class mặc định private.",
+    "related": ["ctor-dtor", "inheritance-oop", "struct-keyword"]
+  },
+  {
+    "id": "ctor-dtor",
+    "name": "Constructor (Hàm tạo) & Destructor (Hàm hủy)",
+    "kind": "Phương thức đặc biệt của lớp",
+    "since": "C++98",
+    "def": "Constructor tự động chạy khi khởi tạo đối tượng (trùng tên class, không có kiểu trả về); Destructor (~TenClass) tự chạy khi đối tượng bị hủy để thu hồi tài nguyên.",
+    "syntax": "class Array {\n    int* data;\npublic:\n    Array(int n) : data(new int[n]) {} // Member initializer list\n    ~Array() { delete[] data; }        // Destructor\n};",
+    "use": "Đảm bảo đối tượng luôn được khởi tạo trạng thái hợp lệ và giải phóng bộ nhớ động tự động.",
+    "example": "#include <iostream>\nstruct Tracer {\n    Tracer() { std::cout << \"Tao\\n\"; }\n    ~Tracer() { std::cout << \"Huy\\n\"; }\n};\nint main() { Tracer t; }",
+    "note": "Luôn ưu tiên khởi tạo thuộc tính bằng danh sách khởi tạo thành viên (: val(0)) thay vì gán trong thân hàm tạo. Nếu class quản lý con trỏ cấp phát động, cần tuân thủ Quy tắc Bộ Ba (Copy Constructor, Copy Assignment, Destructor).",
+    "related": ["class-keyword", "raii-idiom"]
+  },
+  {
+    "id": "inheritance-oop",
+    "name": "Kế thừa (Inheritance) & Nạp chồng toán tử",
+    "kind": "Cơ chế OOP",
+    "since": "C++98",
+    "def": "Cho phép lớp dẫn xuất (Derived class) thừa hưởng thuộc tính và phương thức từ lớp cơ sở (Base class); nạp chồng toán tử (operator+) định nghĩa lại phép toán cho kiểu tự tạo.",
+    "syntax": "class Student : public Person {\n    // Kế thừa công khai từ Person\n};",
+    "use": "Tái sử dụng mã nguồn phân cấp và thao tác đối tượng tự nhiên như kiểu nguyên thủy.",
+    "example": "#include <iostream>\nstruct Vec2 {\n    int x, y;\n    Vec2 operator+(const Vec2& o) const { return {x + o.x, y + o.y}; }\n};\nint main() { Vec2 a{1,2}, b{3,4}, c = a + b; std::cout << c.x << '\\n'; }",
+    "note": "Trong C++ hỗ trợ đa kế thừa (kế thừa từ nhiều lớp cha cùng lúc), nhưng cần dùng kế thừa ảo (virtual inheritance) nếu gặp bài toán kế thừa hình thoi.",
+    "related": ["class-keyword", "virtual-polymorphism"]
+  },
+  {
+    "id": "virtual-polymorphism",
+    "name": "virtual, override & Đa hình động (Polymorphism)",
+    "kind": "Từ khóa · Đa hình thời điểm chạy",
+    "since": "C++98 (override/final từ C++11)",
+    "def": "Từ khóa virtual cho phép con trỏ hoặc tham chiếu lớp cơ sở gọi đúng phiên bản hàm đã ghi đè của lớp dẫn xuất tại thời điểm chạy (thông qua bảng vtable).",
+    "syntax": "class Shape {\npublic:\n    virtual double area() const = 0; // Hàm thuần ảo (Pure virtual)\n    virtual ~Shape() {}              // Virtual destructor bắt buộc\n};\nclass Circle : public Shape {\npublic:\n    double area() const override { return 3.14; }\n};",
+    "use": "Xây dựng lớp trừu tượng (Interface/Abstract class) và xử lý đồng nhất nhiều loại đối tượng con qua mảng con trỏ lớp cha.",
+    "example": "#include <iostream>\nstruct Base { virtual void say() { std::cout << \"Base\\n\"; } virtual ~Base() {} };\nstruct Sub : Base { void say() { std::cout << \"Sub\\n\"; } };\nint main() { Base* p = new Sub(); p->say(); delete p; }",
+    "note": "Lớp cơ sở có hàm virtual BẮT BUỘC phải có virtual destructor (~Base()), nếu không khi delete con trỏ lớp cha sẽ không gọi hàm hủy của lớp con gây rò rỉ bộ nhớ.",
+    "related": ["inheritance-oop", "class-keyword"]
+  }
+]
