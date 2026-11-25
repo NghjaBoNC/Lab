@@ -37,7 +37,7 @@
 
   <main class="wrap">
     <section class="glass-card hero-lab">
-      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 10 MODULE</span>
+      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 11 MODULE</span>
       <h1 class="lab-title">NghjaBoNC's Lab</h1>
       <p id="lab-quote" class="lab-status"></p>
     </section>
@@ -115,6 +115,8 @@
         </div>
       </a>
 
+      <a href="du-an/" class="mod-card" style="grid-column: span 2; min-height: 76px;"><div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">🚀 Dự Án Khác</span><span id="tag-da" class="mod-tag">4 dự án</span></div><div id="live-da" class="mod-live">Kho game web, script Termux <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;"> ý tưởng đang code</div></a>
+
       <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;">
         <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">⚙️ Cài Đặt & Sao Lưu</span><span class="mod-tag">JSON Sync</span></div>
         <div class="mod-live">Xuất / Khôi phục toàn bộ dữ liệu 10 module & Quote</div>
@@ -158,7 +160,7 @@
     document.getElementById('live-tk').textContent = `${mins >= 60 ? Math.floor(mins/60)+'h '+(mins%60)+'p' : mins+' phút'} · ${st.total} buổi`;
     document.getElementById('live-gc').textContent = `${s.notes.length} ghi chú đã lưu`;
     document.getElementById('tag-tt').textContent = `${st.streak}/${rk.next}`;
-    document.getElementById('live-tt').textContent = `Hạng: ${rk.name}`;
+    document.getElementById('live-tt').textContent = `Hạng: ${rk.name}`; const pCnt = s.projects.length || 4; document.getElementById('tag-da').textContent = pCnt + ' dự án';
   </script>
 </body>
 </html>
