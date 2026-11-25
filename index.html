@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="core/theme.css?v=12" />
+  <link rel="stylesheet" href="core/theme.css?v=14" />
   <style>
     .hero-lab { display: flex; flex-direction: column; gap: 4px; }
     .lab-sub { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; color: var(--gold); }
@@ -115,9 +115,20 @@
         </div>
       </a>
 
-      <a href="du-an/" class="mod-card" style="grid-column: span 2; min-height: 76px;">
-        <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">🚀 Dự Án Khác</span><span id="tag-da" class="mod-tag">Mở</span></div>
-        <div id="live-da" class="mod-live">Không gian lưu trữ các dự án cá nhân</div>
+      <a href="code-khoa/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">📚</span><span class="mod-tag">C++ Wiki</span></div>
+        <div>
+          <div class="mod-name">Code Khoa</div>
+          <div class="mod-live">Bách khoa toàn thư C++</div>
+        </div>
+      </a>
+
+      <a href="du-an/" class="mod-card">
+        <div class="mod-top"><span class="mod-ico">🚀</span><span id="tag-da" class="mod-tag">Mở</span></div>
+        <div>
+          <div class="mod-name">Dự Án Khác</div>
+          <div class="mod-live">Kho dự án cá nhân</div>
+        </div>
       </a>
 
       <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;">
@@ -128,8 +139,8 @@
   </main>
 
   <script src="core/quotes.js"></script>
-  <script src="core/roadmap.js?v=12"></script>
-  <script src="core/store.js?v=12"></script>
+  <script src="core/roadmap.js?v=14"></script>
+  <script src="core/store.js?v=14"></script>
   <script>
     const s = LabStore.load();
     const today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
