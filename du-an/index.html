@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Dự Án Khác · NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="../core/theme.css?v=10" />
+  <link rel="stylesheet" href="../core/theme.css?v=12" />
   <style>
     .p-card { background: var(--card-bg); color: var(--text-dark); border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .p-card.hidden-item { opacity: 0.55; border: 1.5px dashed #a855f7; }
     .p-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .p-name { font-size: 0.95rem; font-weight: 800; }
     .p-st { font-size: 0.66rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
@@ -24,66 +25,62 @@
     <span class="page-title">Dự Án Khác</span>
   </header>
   <main class="wrap">
-    <details class="white-card" style="font-size:0.82rem;">
-      <summary style="font-weight:800;cursor:pointer;color:var(--primary);">+ Thêm dự án / tool / game mới</summary>
-      <div style="display:flex;flex-direction:column;gap:7px;margin-top:9px;">
-        <input id="p-name" class="input-box" placeholder="Tên dự án (VD: Port Scanner Python)" />
-        <input id="p-desc" class="input-box" placeholder="Mô tả ngắn / công nghệ dùng..." />
-        <div style="display:flex;gap:6px;">
-          <input id="p-url" class="input-box" placeholder="Link chạy / GitHub (không bắt buộc)" style="flex:1.4;" />
-          <select id="p-st" class="input-box" style="flex:0.8;">
-            <option value="wip">Đang code</option>
-            <option value="idea">Ý tưởng</option>
-            <option value="done">Hoàn thành</option>
-          </select>
-        </div>
-        <button id="p-add" class="btn-pri">Lưu Dự Án</button>
+    <section class="white-card" style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <strong style="font-size:0.86rem;">+ Thêm dự án mới</strong>
+        <button id="toggle-hidden" class="btn-sec" style="padding:4px 9px;font-size:0.7rem;">👁️ Hiện mục ẩn (0)</button>
       </div>
-    </details>
+      <input id="p-name" class="input-box" placeholder="Tên dự án..." />
+      <input id="p-desc" class="input-box" placeholder="Mô tả ngắn..." />
+      <div style="display:flex;gap:6px;">
+        <input id="p-url" class="input-box" placeholder="Link chạy / GitHub (tùy chọn)" style="flex:1.4;" />
+        <select id="p-st" class="input-box" style="flex:0.8;">
+          <option value="wip">Đang code</option>
+          <option value="idea">Ý tưởng</option>
+          <option value="done">Hoàn thành</option>
+        </select>
+      </div>
+      <button id="p-add" class="btn-pri">Lưu Dự Án</button>
+    </section>
 
     <div id="p-list" style="display:flex;flex-direction:column;gap:10px;"></div>
   </main>
 
-  <script src="../core/roadmap.js?v=10"></script>
-  <script src="../core/store.js?v=10"></script>
+  <script src="../core/roadmap.js?v=12"></script>
+  <script src="../core/store.js?v=12"></script>
   <script>
-    const DEFAULT_PROJECTS = [
-      { name: 'Heart Broken Clicker', desc: 'Game clicker mini HTML/CSS/JS tự code trên CodePen Mobile', url: '', status: 'done' },
-      { name: 'Space Bullet-Hell', desc: 'Game bắn ruồi tối giản lấy cảm hứng từ Chicken Invaders', url: '', status: 'done' },
-      { name: 'Solar System Timing', desc: 'Arcade canh nhịp quỹ đạo hành tinh trên trình duyệt mobile', url: '', status: 'done' },
-      { name: 'Termux Cyber Scripts', desc: 'Bộ script Bash/Python thực hành pentest & quét cổng mạng', url: '', status: 'wip' }
-    ];
-
     const ST_MAP = {
       wip: { lbl: '⚡ Đang code', cls: 'st-wip', next: 'done' },
       done: { lbl: '✅ Hoàn thành', cls: 'st-done', next: 'idea' },
       idea: { lbl: '💡 Ý tưởng', cls: 'st-idea', next: 'wip' }
     };
 
-    const getProjects = () => {
-      const s = LabStore.load();
-      if (!s.projects.length) { s.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS)); LabStore.save(s); }
-      return s;
-    };
+    let showHidden = false;
 
     const render = () => {
-      const s = getProjects(), wrap = document.getElementById('p-list');
-      wrap.innerHTML = '';
-      s.projects.forEach((p, idx) => {
+      const s = LabStore.load(), wrap = document.getElementById('p-list');
+      const hiddenCount = s.projects.filter(p => p.hidden).length;
+      document.getElementById('toggle-hidden').textContent = showHidden ? '🙈 Giấu mục ẩn' : `👁️ Hiện mục ẩn (${hiddenCount})`;
+
+      const visible = s.projects.map((p, idx) => ({ ...p, idx })).filter(p => showHidden || !p.hidden);
+      wrap.innerHTML = visible.length ? '' : '<div class="glass-card" style="text-align:center;font-size:0.78rem;color:var(--text-sub);">Chưa có dự án nào hiển thị</div>';
+
+      visible.forEach(p => {
         const st = ST_MAP[p.status] || ST_MAP.idea;
         const linkHtml = p.url ? `<a href="${p.url}" target="_blank" class="p-link">Mở dự án ↗</a>` : `<span style="font-size:0.7rem;color:#7c3aed;font-weight:700;">Chưa gắn link</span>`;
         wrap.insertAdjacentHTML('beforeend', `
-          <div class="p-card">
+          <div class="p-card ${p.hidden ? 'hidden-item' : ''}">
             <div class="p-top">
               <span class="p-name">${p.name}</span>
-              <span class="p-st ${st.cls}" data-st="${idx}" title="Chạm để đổi trạng thái">${st.lbl}</span>
+              <span class="p-st ${st.cls}" data-st="${p.idx}">${st.lbl}</span>
             </div>
-            <div class="p-desc">${p.desc}</div>
+            ${p.desc ? `<div class="p-desc">${p.desc}</div>` : ''}
             <div class="p-foot">
               ${linkHtml}
-              <div style="display:flex;gap:8px;align-items:center;">
-                <button class="btn-sec" data-edit="${idx}" style="padding:4px 8px;font-size:0.7rem;">Gắn link</button>
-                <button data-del="${idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button class="btn-sec" data-hide="${p.idx}" style="padding:4px 8px;font-size:0.7rem;">${p.hidden ? 'Hiện' : 'Ẩn'}</button>
+                <button class="btn-sec" data-edit="${p.idx}" style="padding:4px 8px;font-size:0.7rem;">Link</button>
+                <button data-del="${p.idx}" style="border:none;background:none;color:#94a3b8;font-weight:800;cursor:pointer;">✕</button>
               </div>
             </div>
           </div>
@@ -95,9 +92,14 @@
         cur.projects[i].status = (ST_MAP[cur.projects[i].status] || ST_MAP.idea).next;
         LabStore.save(cur); render();
       });
+      wrap.querySelectorAll('[data-hide]').forEach(el => el.onclick = () => {
+        const cur = LabStore.load(), i = Number(el.dataset.hide);
+        cur.projects[i].hidden = !cur.projects[i].hidden;
+        LabStore.save(cur); render();
+      });
       wrap.querySelectorAll('[data-edit]').forEach(el => el.onclick = () => {
         const cur = LabStore.load(), i = Number(el.dataset.edit);
-        const u = prompt('Dán link GitHub / GitHub Pages / CodePen cho dự án này:', cur.projects[i].url || 'https://');
+        const u = prompt('Dán link dự án:', cur.projects[i].url || 'https://');
         if (u !== null) { cur.projects[i].url = u.trim() === 'https://' ? '' : u.trim(); LabStore.save(cur); render(); }
       });
       wrap.querySelectorAll('[data-del]').forEach(el => el.onclick = () => {
@@ -106,15 +108,18 @@
       });
     };
 
+    document.getElementById('toggle-hidden').onclick = () => { showHidden = !showHidden; render(); };
+
     document.getElementById('p-add').onclick = () => {
       const name = document.getElementById('p-name').value.trim();
       if (!name) return;
       const s = LabStore.load();
       s.projects.unshift({
         name,
-        desc: document.getElementById('p-desc').value.trim() || 'Dự án cá nhân',
+        desc: document.getElementById('p-desc').value.trim(),
         url: document.getElementById('p-url').value.trim(),
-        status: document.getElementById('p-st').value
+        status: document.getElementById('p-st').value,
+        hidden: false
       });
       LabStore.save(s);
       document.getElementById('p-name').value = '';

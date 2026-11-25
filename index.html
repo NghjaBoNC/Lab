@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>NghjaBoNC's Lab</title>
-  <link rel="stylesheet" href="core/theme.css?v=11" />
+  <link rel="stylesheet" href="core/theme.css?v=12" />
   <style>
     .hero-lab { display: flex; flex-direction: column; gap: 4px; }
     .lab-sub { font-size: 0.72rem; font-weight: 800; letter-spacing: 1px; color: var(--gold); }
@@ -37,7 +37,7 @@
 
   <main class="wrap">
     <section class="glass-card hero-lab">
-      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 10 MODULE</span>
+      <span class="lab-sub">HỆ SINH THÁI CÁ NHÂN · 11 MODULE</span>
       <h1 class="lab-title">NghjaBoNC's Lab</h1>
       <p id="lab-quote" class="lab-status"></p>
     </section>
@@ -115,16 +115,21 @@
         </div>
       </a>
 
+      <a href="du-an/" class="mod-card" style="grid-column: span 2; min-height: 76px;">
+        <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">🚀 Dự Án Khác</span><span id="tag-da" class="mod-tag">Mở</span></div>
+        <div id="live-da" class="mod-live">Không gian lưu trữ các dự án cá nhân</div>
+      </a>
+
       <a href="cai-dat/" class="mod-card" style="grid-column: span 2; min-height: 74px;">
         <div class="mod-top"><span class="mod-ico" style="font-size:0.95rem;font-weight:800;">⚙️ Cài Đặt & Sao Lưu</span><span class="mod-tag">JSON Sync</span></div>
-        <div class="mod-live">Xuất / Khôi phục toàn bộ dữ liệu 10 module & Quote</div>
+        <div class="mod-live">Xuất / Khôi phục toàn bộ dữ liệu & Quote</div>
       </a>
     </section>
   </main>
 
   <script src="core/quotes.js"></script>
-  <script src="core/roadmap.js?v=11"></script>
-  <script src="core/store.js?v=11"></script>
+  <script src="core/roadmap.js?v=12"></script>
+  <script src="core/store.js?v=12"></script>
   <script>
     const s = LabStore.load();
     const today = LabStore.toDateKey(new Date()), ym = today.slice(0, 7);
@@ -159,6 +164,9 @@
     document.getElementById('live-gc').textContent = `${s.notes.length} ghi chú đã lưu`;
     document.getElementById('tag-tt').textContent = `${st.streak}/${rk.next}`;
     document.getElementById('live-tt').textContent = `Hạng: ${rk.name}`;
+
+    const visProj = s.projects.filter(p => !p.hidden).length;
+    document.getElementById('tag-da').textContent = visProj ? `${visProj} dự án` : 'Mở';
   </script>
 </body>
 </html>
